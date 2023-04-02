@@ -31,13 +31,15 @@ void AWeaponRocketLauncher::Shoot()
     }
 }
 
-void AWeaponRocketLauncher::StartFire()
+bool AWeaponRocketLauncher::StartFire()
 {
-    if (bNowFiring) return;
-    bNowFiring = true;
+    if (!Super::StartFire()) return false;
+
     Shoot();
     GetWorldTimerManager().SetTimer(
         DelayBetweenShotsTimerHandle, this, &ThisClass::Shoot, DelayBetweenShots, true);
+
+    return true;
 }
 
 void AWeaponRocketLauncher::StopFire()

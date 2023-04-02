@@ -71,7 +71,12 @@ void AWeaponBase::Shoot()
     SpawnEffects();
 }
 
-void AWeaponBase::StartFire() {}
+bool AWeaponBase::StartFire()
+{
+    if (bNowFiring) return false;
+    bNowFiring = true;
+    return true;
+}
 
 void AWeaponBase::StopFire()
 {

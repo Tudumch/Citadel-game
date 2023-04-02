@@ -59,13 +59,15 @@ void AWeaponRifle::Shoot()
     PrintDebugInfo(RifleHitResult);
 }
 
-void AWeaponRifle::StartFire()
+bool AWeaponRifle::StartFire()
 {
-    if (bNowFiring) return;
-    bNowFiring = true;
+    if (!Super::StartFire()) return false;
+
     Shoot();
     GetWorldTimerManager().SetTimer(
         DelayBetweenShotsTimerHandle, this, &ThisClass::Shoot, DelayBetweenShots, true);
+
+    return true;
 }
 
 void AWeaponRifle::StopFire()

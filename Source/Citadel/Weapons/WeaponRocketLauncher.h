@@ -14,7 +14,7 @@ class CITADEL_API AWeaponRocketLauncher : public AWeaponBase
     GENERATED_BODY()
 
 public:
-    virtual void StartFire() override;
+    virtual bool StartFire() override;
     virtual void StopFire() override;
 
 protected:

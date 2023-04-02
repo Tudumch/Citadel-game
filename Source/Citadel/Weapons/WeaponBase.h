@@ -18,7 +18,7 @@ public:
     AWeaponBase();
 
     // Checks various Timers of weapon firerate and calls the Shoot function
-    virtual void StartFire();
+    virtual bool StartFire();
 
     // Does some operations with Firerate Timers after shot
     virtual void StopFire();

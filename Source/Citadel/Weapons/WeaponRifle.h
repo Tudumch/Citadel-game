@@ -15,7 +15,7 @@ class CITADEL_API AWeaponRifle : public AWeaponBase
 
 public:
     AWeaponRifle();
-    virtual void StartFire() override;
+    virtual bool StartFire() override;
     virtual void StopFire() override;
     virtual bool ZoomFOV(bool ZoomON) override;
 
