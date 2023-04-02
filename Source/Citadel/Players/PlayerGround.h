@@ -18,7 +18,7 @@ class UTextRenderComponent;
 class UWeaponComponent;
 
 /*
-Main Pawn class for Players and bots.
+Main Pawn class for Players and Bots.
 */
 UCLASS()
 class CITADEL_API APlayerGround : public ACharacter
@@ -26,7 +26,6 @@ class CITADEL_API APlayerGround : public ACharacter
     GENERATED_BODY()
 
 public:
-    APlayerGround();
     APlayerGround(const class FObjectInitializer& ObjectInitializer);
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -35,36 +34,24 @@ public:
     virtual void Tick(float DeltaTime) override;
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+    UFUNCTION(BlueprintCallable, Category = "TextRender")
+    void UpdateHealthRenderText();
+
     // Changes the base color inside the Pawn's Material
     void SetPlayerColor(FLinearColor Color);
 
-    //
-    // Pawn control functions
-    //
+    // ----------
+    // PAWN INPUT FUNCTIONS
 
     void MoveForward(float AxisValue);
     void MoveRight(float AxisValue);
     void LookUp(float AxisValue);
     void LookRight(float AxisValue);
 
-    //
-    // Getters for use in AnimBP
-    //
-
-    UFUNCTION(BlueprintPure)
-    bool GetCrouching() { return bCrouching; };
-    UFUNCTION(BlueprintPure)
-    bool GetJogginging() { return bJogging; };
-    UFUNCTION(BlueprintPure)
-    bool GetSprinting() { return bSprinting; };
-
-    UFUNCTION(BlueprintCallable, Category = "TextRender")
-    void UpdateHealthRenderText();
-
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Materials")
     FName MaterialColorName =
-        "BodyColor";  // name of the node that sets the base color of the Material for the Pawn
+        "BodyColor";  // name of the node that sets the base color of the material for the Pawn
 
     virtual void BeginPlay() override;
 
@@ -73,16 +60,6 @@ protected:
 
 private:
     APlayerController* PlayerController;
-    bool bCrouching = false;
-    bool bJogging = true;
-    bool bSprinting = false;
-
-    enum PlayerStances
-    {
-        Crouching,
-        Jogging,
-        Sprinting
-    };
 
     UPROPERTY(EditAnywhere)
     UTextRenderComponent* HealthTextRender;
@@ -91,5 +68,34 @@ private:
 
     void SetupHealthComponent();
 
+    // ----------
+    // STANCES
+    // ----------
+public:
+    // ----------
+    // GETTERS FOR USE IN ANIMBP
+
+    UFUNCTION(BlueprintPure)
+    bool GetCrouching() { return bCrouching; };
+    UFUNCTION(BlueprintPure)
+    bool GetJogginging() { return bJogging; };
+    UFUNCTION(BlueprintPure)
+    bool GetSprinting() { return bSprinting; };
+
+protected:
+private:
+    bool bCrouching = false;
+    bool bJogging = true;  // default stance
+    bool bSprinting = false;
+
+    // Enum for pass attributes to ToggleStance function
+    enum PlayerStances
+    {
+        Crouching,
+        Jogging,
+        Sprinting
+    };
+
+    // Changes boolean variables that switch stances
     void ToggleStance(PlayerStances Stance);
 };

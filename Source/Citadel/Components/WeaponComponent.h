@@ -8,7 +8,7 @@
 
 class AWeaponBase;
 
-// Stores and changes info about all types of ammo, which player has in inventory.
+// Stores and changes info about all types of ammo player's inventory.
 USTRUCT(BlueprintType)
 struct FAmmoDataHandler
 {
@@ -42,6 +42,9 @@ public:
     void StopFire();
     void SwitchWeapon();
     void ToggleZoom(bool ZoomON);
+
+    // ----------
+    // AMMO
 
     UFUNCTION()
     void ReloadActiveWeapon();
