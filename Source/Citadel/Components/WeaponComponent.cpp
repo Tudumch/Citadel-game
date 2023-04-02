@@ -116,3 +116,27 @@ void UWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
     Super::EndPlay(EndPlayReason);
 }
+
+int32 FAmmoDataHandler::TakeAmmoRifle(int32 Amount)
+{
+    RifleAmmo -= Amount;
+
+    if (RifleAmmo < 0)
+    {
+        Amount -= RifleAmmo;
+        RifleAmmo = 0;
+    }
+    return Amount;
+}
+
+int32 FAmmoDataHandler::TakeAmmoRocketLauncher(int32 Amount)
+{
+    RocketLauncherAmmo -= Amount;
+
+    if (RocketLauncherAmmo < 0)
+    {
+        Amount -= RocketLauncherAmmo;
+        RocketLauncherAmmo = 0;
+    }
+    return Amount;
+}
