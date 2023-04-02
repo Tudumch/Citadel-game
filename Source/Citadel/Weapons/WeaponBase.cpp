@@ -73,7 +73,6 @@ bool AWeaponBase::Shoot()
     if (GetAmmoInActiveClip() <= 0) return false;
 
     DecreaseAmmoInActiveClip(1);
-    UE_LOG(LogTemp, Warning, TEXT("%d"), GetAmmoInActiveClip());
     SpawnEffects();
 
     return true;

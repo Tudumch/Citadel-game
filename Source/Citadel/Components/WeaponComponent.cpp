@@ -103,6 +103,21 @@ void UWeaponComponent::ToggleZoom(bool ZoomON)
     ActiveWeapon->ZoomFOV(ZoomON);
 }
 
+int32 UWeaponComponent::GetActiveWeaponTotalAmmo()
+{
+    if (AWeaponRifle* Rifle = Cast<AWeaponRifle>(ActiveWeapon))
+        return AmmoDataHandler.GetAmmoRifle();
+    if (AWeaponRocketLauncher* Rifle = Cast<AWeaponRocketLauncher>(ActiveWeapon))
+        return AmmoDataHandler.GetAmmoRocketLauncher();
+
+    return 0;
+}
+
+int32 UWeaponComponent::GetActiveWeaponAmmoInClip()
+{
+    return ActiveWeapon->GetAmmoInActiveClip();
+}
+
 void UWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     ActiveWeapon = nullptr;

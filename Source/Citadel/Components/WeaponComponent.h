@@ -43,6 +43,11 @@ public:
     void SwitchWeapon();
     void ToggleZoom(bool ZoomON);
 
+    UFUNCTION(BlueprintPure)
+    int32 GetActiveWeaponTotalAmmo();
+    UFUNCTION(BlueprintPure)
+    int32 GetActiveWeaponAmmoInClip();
+
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     TArray<TSubclassOf<AWeaponBase>> WeaponClasses;

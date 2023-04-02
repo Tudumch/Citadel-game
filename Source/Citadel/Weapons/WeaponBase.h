@@ -17,32 +17,46 @@ class CITADEL_API AWeaponBase : public AActor
 public:
     AWeaponBase();
 
+    virtual bool ZoomFOV(bool ZoomON) { return false; };
+
+    // ----------
+    // FIRERATE
+
     // Checks firerate Timers and calls the Shoot function
     virtual bool StartFire();
-
     // Does some operations with firerate Timers after shot
     virtual void StopFire();
 
-    virtual bool ZoomFOV(bool ZoomON) { return false; };
+    // ----------
+    // AMMO
 
     void Reload(int32 Amount) { this->AmmoInActiveClip = Amount; };
     int32 GetAmmoInActiveClip() { return this->AmmoInActiveClip; };
     int32 DecreaseAmmoInActiveClip(int32 Amount) { return AmmoInActiveClip -= Amount; };
 
 protected:
-    UPROPERTY(EditAnywhere) FName MuzzleSocketName = TEXT("Muzzle_Socket");
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon Parameters")
+    int32 WeaponRange = 2000;
+
+    // ----------
+    // COMPONENTS
+
+    UPROPERTY(EditAnywhere)
+    FName MuzzleSocketName = TEXT("Muzzle_Socket");
     UPROPERTY(EditAnywhere)
     USceneComponent* SceneComponent;
     UPROPERTY(EditAnywhere)
     USkeletalMeshComponent* SkeletalMesh;
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon Parameters")
-    int32 WeaponRange = 2000;
+
+    // ----------
+    // FX
+
     UPROPERTY(EditAnywhere, Category = "FX")
     UParticleSystem* MuzzleFlashParticle;
     UPROPERTY(EditAnywhere, Category = "FX")
     USoundBase* ShotSound;
 
-    //
+    // ----------
     // FIRERATE
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon Parameters")
@@ -56,7 +70,7 @@ protected:
     // Function for use in timers. Calls Shoot function.
     virtual void CallShootFunction();
 
-    //
+    // ----------
     // AMMO
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon Parameters")
