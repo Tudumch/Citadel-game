@@ -7,18 +7,13 @@
 #include "Weapons/WeaponRocketLauncher.h"
 #include "Players/PlayerGround.h"
 
-// Sets default values for this component's properties
+DEFINE_LOG_CATEGORY_STATIC(Log_WeaponComponent, All, All);
+
 UWeaponComponent::UWeaponComponent()
 {
-    // Set this component to be initialized when the game starts, and to be
-    // ticked every frame.  You can turn these features off to improve
-    // performance if you don't need them.
     PrimaryComponentTick.bCanEverTick = false;
-
-    // ...
 }
 
-// Called when the game starts
 void UWeaponComponent::BeginPlay()
 {
     Super::BeginPlay();
@@ -32,7 +27,8 @@ void UWeaponComponent::SetupWeapon()
 
     if (WeaponClasses.Num() == 0)
     {
-        UE_LOG(LogTemp, Error, TEXT("%s: Default Weapons has not set!"), *Player->GetName());
+        UE_LOG(Log_WeaponComponent, Error, TEXT("SetupWeapon: %s: Default Weapons has not set!"),
+            *Player->GetName());
         return;
     }
 
@@ -52,7 +48,8 @@ void UWeaponComponent::SetupWeapon()
     ActiveWeapon = CharacterWeapons[ActiveWeaponIdx];
     if (!ActiveWeapon)
     {
-        UE_LOG(LogTemp, Error, TEXT("%s: Can't get active weapon!"), *Player->GetName());
+        UE_LOG(Log_WeaponComponent, Error, TEXT("SetupWeapon: %s: Can't get active weapon!"),
+            *Player->GetName());
         return;
     }
 
