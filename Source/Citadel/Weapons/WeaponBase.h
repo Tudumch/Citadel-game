@@ -17,17 +17,20 @@ class CITADEL_API AWeaponBase : public AActor
 public:
     AWeaponBase();
 
-    // Checks various Timers of weapon firerate and calls the Shoot function
+    // Checks firerate Timers and calls the Shoot function
     virtual bool StartFire();
 
-    // Does some operations with Firerate Timers after shot
+    // Does some operations with firerate Timers after shot
     virtual void StopFire();
 
     virtual bool ZoomFOV(bool ZoomON) { return false; };
 
+    void Reload(int32 Amount) { this->AmmoInActiveClip = Amount; };
+    int32 GetAmmoInActiveClip() { return this->AmmoInActiveClip; };
+    int32 DecreaseAmmoInActiveClip(int32 Amount) { return AmmoInActiveClip -= Amount; };
+
 protected:
-    UPROPERTY(EditAnywhere)
-    FName MuzzleSocketName = TEXT("Muzzle_Socket");
+    UPROPERTY(EditAnywhere) FName MuzzleSocketName = TEXT("Muzzle_Socket");
     UPROPERTY(EditAnywhere)
     USceneComponent* SceneComponent;
     UPROPERTY(EditAnywhere)
@@ -40,8 +43,7 @@ protected:
     USoundBase* ShotSound;
 
     //
-    // WEAPON FIRERATE
-    //
+    // FIRERATE
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon Parameters")
     float DelayBetweenShots = 0.1f;
@@ -51,11 +53,22 @@ protected:
     FTimerHandle
         DelayBetweenMouseClicksTimerHandle;  // delay between repeatedly pressing the shot button
 
+    // Function for use in timers. Calls Shoot function.
+    virtual void CallShootFunction();
+
+    //
+    // AMMO
+
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon Parameters")
+    int32 ClipSize = 30;
+
+    int32 AmmoInActiveClip;
+
     // Gets player's Pawn and returns Pawn's Controller
     AController* GetOwnerController();
 
     virtual void BeginPlay() override;
-    virtual void Shoot();
+    virtual bool Shoot();
     virtual void SpawnEffects();
     virtual void GetShotStartEndPoints(
         FHitResult& HitResult, FVector& StartPoint, FVector& EndPoint);

@@ -13,15 +13,11 @@ class CITADEL_API AWeaponRocketLauncher : public AWeaponBase
 {
     GENERATED_BODY()
 
-public:
-    virtual bool StartFire() override;
-    virtual void StopFire() override;
-
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     TSubclassOf<AWeaponProjectile> ProjectileClass;
 
-    virtual void Shoot() override;
+    virtual bool Shoot() override;
 
 private:
     FHitResult HitResult;

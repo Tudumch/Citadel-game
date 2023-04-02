@@ -7,9 +7,9 @@
 
 #include "Weapons/WeaponProjectile.h"
 
-void AWeaponRocketLauncher::Shoot()
+bool AWeaponRocketLauncher::Shoot()
 {
-    Super::Shoot();
+    if (!Super::Shoot()) return false;
 
     FVector StartPoint;
     FVector EndPoint;
@@ -29,20 +29,6 @@ void AWeaponRocketLauncher::Shoot()
         Projectile->SetOwner(GetOwner());
         Projectile->FinishSpawning(SpawnLocation);
     }
-}
-
-bool AWeaponRocketLauncher::StartFire()
-{
-    if (!Super::StartFire()) return false;
-
-    Shoot();
-    GetWorldTimerManager().SetTimer(
-        DelayBetweenShotsTimerHandle, this, &ThisClass::Shoot, DelayBetweenShots, true);
 
     return true;
-}
-
-void AWeaponRocketLauncher::StopFire()
-{
-    Super::StopFire();
 }

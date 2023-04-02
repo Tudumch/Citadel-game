@@ -15,8 +15,6 @@ class CITADEL_API AWeaponRifle : public AWeaponBase
 
 public:
     AWeaponRifle();
-    virtual bool StartFire() override;
-    virtual void StopFire() override;
     virtual bool ZoomFOV(bool ZoomON) override;
 
 protected:
@@ -33,7 +31,7 @@ protected:
 
     FHitResult RifleHitResult;
 
-    virtual void Shoot() override;
+    virtual bool Shoot() override;
     virtual void GetShotStartEndPoints(
         FHitResult& HitResult, FVector& StartPoint, FVector& EndPoint) override;
 

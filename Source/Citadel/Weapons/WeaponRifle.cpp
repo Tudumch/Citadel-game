@@ -21,9 +21,9 @@ AWeaponRifle::AWeaponRifle()
         CreateAbstractDefaultSubobject<UImpactFXComponent>(TEXT("ImpactFXComponent"));
 }
 
-void AWeaponRifle::Shoot()
+bool AWeaponRifle::Shoot()
 {
-    Super::Shoot();
+    if (!Super::Shoot()) return false;
 
     FVector TraceStart;
     FVector TraceEnd;
@@ -57,22 +57,8 @@ void AWeaponRifle::Shoot()
     ImpactFXComponent->PlayImpactFX(RifleHitResult);
 
     PrintDebugInfo(RifleHitResult);
-}
-
-bool AWeaponRifle::StartFire()
-{
-    if (!Super::StartFire()) return false;
-
-    Shoot();
-    GetWorldTimerManager().SetTimer(
-        DelayBetweenShotsTimerHandle, this, &ThisClass::Shoot, DelayBetweenShots, true);
 
     return true;
-}
-
-void AWeaponRifle::StopFire()
-{
-    Super::StopFire();
 }
 
 void AWeaponRifle::GetShotStartEndPoints(

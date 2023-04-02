@@ -29,6 +29,8 @@ AWeaponBase::AWeaponBase()
 void AWeaponBase::BeginPlay()
 {
     Super::BeginPlay();
+
+    AmmoInActiveClip = ClipSize;
 }
 
 AController* AWeaponBase::GetOwnerController()
@@ -66,15 +68,27 @@ void AWeaponBase::GetShotStartEndPoints(
         OUT HitResult, StartPoint, EndPoint, ECollisionChannel::ECC_Visibility, TraceParams);
 }
 
-void AWeaponBase::Shoot()
+bool AWeaponBase::Shoot()
 {
+    if (GetAmmoInActiveClip() <= 0) return false;
+
+    DecreaseAmmoInActiveClip(1);
+    UE_LOG(LogTemp, Warning, TEXT("%d"), GetAmmoInActiveClip());
     SpawnEffects();
+
+    return true;
 }
 
 bool AWeaponBase::StartFire()
 {
     if (bNowFiring) return false;
+
     bNowFiring = true;
+
+    Shoot();
+    GetWorldTimerManager().SetTimer(
+        DelayBetweenShotsTimerHandle, this, &ThisClass::CallShootFunction, DelayBetweenShots, true);
+
     return true;
 }
 
@@ -92,6 +106,11 @@ void AWeaponBase::StopFire()
 void AWeaponBase::Unfire()
 {
     bNowFiring = false;
+}
+
+void AWeaponBase::CallShootFunction()
+{
+    Shoot();
 }
 
 void AWeaponBase::SpawnEffects()
