@@ -103,11 +103,25 @@ void UWeaponComponent::ToggleZoom(bool ZoomON)
     ActiveWeapon->ZoomFOV(ZoomON);
 }
 
+void UWeaponComponent::ReloadActiveWeapon()
+{
+    int32 AmmoInClip = GetActiveWeaponAmmoInClip();
+    int32 TakenAmmo;
+
+    if (AWeaponRifle* Rifle = Cast<AWeaponRifle>(ActiveWeapon))
+        TakenAmmo = AmmoDataHandler.TakeAmmoRifle(ActiveWeapon->GetWeaponClipSize() - AmmoInClip);
+    if (AWeaponRocketLauncher* Launcher = Cast<AWeaponRocketLauncher>(ActiveWeapon))
+        TakenAmmo =
+            AmmoDataHandler.TakeAmmoRocketLauncher(ActiveWeapon->GetWeaponClipSize() - AmmoInClip);
+
+    ActiveWeapon->Reload(AmmoInClip + TakenAmmo);
+}
+
 int32 UWeaponComponent::GetActiveWeaponTotalAmmo()
 {
     if (AWeaponRifle* Rifle = Cast<AWeaponRifle>(ActiveWeapon))
         return AmmoDataHandler.GetAmmoRifle();
-    if (AWeaponRocketLauncher* Rifle = Cast<AWeaponRocketLauncher>(ActiveWeapon))
+    if (AWeaponRocketLauncher* Launcher = Cast<AWeaponRocketLauncher>(ActiveWeapon))
         return AmmoDataHandler.GetAmmoRocketLauncher();
 
     return 0;
@@ -134,24 +148,31 @@ void UWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 int32 FAmmoDataHandler::TakeAmmoRifle(int32 Amount)
 {
-    RifleAmmo -= Amount;
-
-    if (RifleAmmo < 0)
+    if (RifleAmmo < Amount)
     {
-        Amount -= RifleAmmo;
+        Amount = RifleAmmo;
         RifleAmmo = 0;
+        return Amount;
     }
-    return Amount;
+    else
+    {
+        RifleAmmo -= Amount;
+        return Amount;
+    }
 }
 
 int32 FAmmoDataHandler::TakeAmmoRocketLauncher(int32 Amount)
 {
-    RocketLauncherAmmo -= Amount;
 
-    if (RocketLauncherAmmo < 0)
+    if (RocketLauncherAmmo < Amount)
     {
-        Amount -= RocketLauncherAmmo;
+        Amount = RocketLauncherAmmo;
         RocketLauncherAmmo = 0;
+        return Amount;
     }
-    return Amount;
+    else
+    {
+        RocketLauncherAmmo -= Amount;
+        return Amount;
+    }
 }

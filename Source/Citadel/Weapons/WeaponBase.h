@@ -32,6 +32,7 @@ public:
 
     void Reload(int32 Amount) { this->AmmoInActiveClip = Amount; };
     int32 GetAmmoInActiveClip() { return this->AmmoInActiveClip; };
+    int32 GetWeaponClipSize() { return ClipSize; }
     int32 DecreaseAmmoInActiveClip(int32 Amount) { return AmmoInActiveClip -= Amount; };
 
 protected:

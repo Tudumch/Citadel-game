@@ -43,6 +43,8 @@ public:
     void SwitchWeapon();
     void ToggleZoom(bool ZoomON);
 
+    UFUNCTION()
+    void ReloadActiveWeapon();
     UFUNCTION(BlueprintPure)
     int32 GetActiveWeaponTotalAmmo();
     UFUNCTION(BlueprintPure)

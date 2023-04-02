@@ -73,6 +73,8 @@ void APlayerGround::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
         TEXT("Fire"), IE_Released, WeaponComponent, &UWeaponComponent::StopFire);
     PlayerInputComponent->BindAction(
         TEXT("SwitchWeapon"), IE_Pressed, WeaponComponent, &UWeaponComponent::SwitchWeapon);
+    PlayerInputComponent->BindAction(
+        TEXT("ReloadWeapon"), IE_Pressed, WeaponComponent, &UWeaponComponent::ReloadActiveWeapon);
 
     // Stance toggling:
     DECLARE_DELEGATE_OneParam(FToggleStanceInputParams,
