@@ -18,10 +18,10 @@ AWeaponBase::AWeaponBase()
     // improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = false;
 
-    SceneComponent = CreateAbstractDefaultSubobject<USceneComponent>(TEXT("Root"));
+    SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
     RootComponent = SceneComponent;
 
-    SkeletalMesh = CreateAbstractDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
+    SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
     SkeletalMesh->SetupAttachment(SceneComponent);
 }
 
@@ -82,10 +82,10 @@ bool AWeaponBase::Shoot()
 bool AWeaponBase::StartFire()
 {
     if (bNowFiring) return false;
-
     bNowFiring = true;
 
     Shoot();
+
     GetWorldTimerManager().SetTimer(
         DelayBetweenShotsTimerHandle, this, &ThisClass::CallShootFunction, DelayBetweenShots, true);
 

@@ -32,6 +32,7 @@ protected:
     FHitResult RifleHitResult;
 
     virtual bool Shoot() override;
+    virtual void MakeDamageToPawn(APawn* Pawn);
     virtual void GetShotStartEndPoints(
         FHitResult& HitResult, FVector& StartPoint, FVector& EndPoint) override;
 

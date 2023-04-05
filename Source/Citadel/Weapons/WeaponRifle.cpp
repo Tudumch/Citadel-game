@@ -29,36 +29,35 @@ bool AWeaponRifle::Shoot()
     FVector TraceEnd;
     GetShotStartEndPoints(OUT RifleHitResult, OUT TraceStart, OUT TraceEnd);
 
-    APlayerGround* PlayerGroundPawn = Cast<APlayerGround>(RifleHitResult.GetActor());
-
-    if (PlayerGroundPawn)
+    if (APawn* Pawn = Cast<APawn>(RifleHitResult.GetActor()))
     {
-        AController* PlayerController = Cast<APawn>(GetOwner())->Controller;
+        MakeDamageToPawn(Pawn);
+    }
 
+    SpawnTraceFX(RifleHitResult.Location);
+
+    return true;
+}
+
+void AWeaponRifle::MakeDamageToPawn(APawn* Pawn)
+{
+    AController* PlayerController = Cast<APawn>(GetOwner())->Controller;
+
+    if (PlayerController)
+    {
         UE_LOG(Log_WeaponRifle, VeryVerbose, TEXT("%s has been hit in %s!"),
             *PlayerController->GetName(), *RifleHitResult.BoneName.ToString());
 
-        if (PlayerController)
+        if (RifleHitResult.BoneName == "head")  // is headshot?
         {
-            if (RifleHitResult.BoneName == "head")  // is headshot?
-            {
-                UGameplayStatics::ApplyDamage(PlayerGroundPawn, WeaponDamage * HeadshotMultiplier,
-                    PlayerController, this, nullptr);
-            }
-            else
-            {
-                UGameplayStatics::ApplyDamage(
-                    PlayerGroundPawn, WeaponDamage, PlayerController, this, nullptr);
-            }
+            UGameplayStatics::ApplyDamage(
+                Pawn, WeaponDamage * HeadshotMultiplier, PlayerController, this, nullptr);
+        }
+        else
+        {
+            UGameplayStatics::ApplyDamage(Pawn, WeaponDamage, PlayerController, this, nullptr);
         }
     }
-
-    SpawnTraceFX(TraceEnd);
-    ImpactFXComponent->PlayImpactFX(RifleHitResult);
-
-    PrintDebugInfo(RifleHitResult);
-
-    return true;
 }
 
 void AWeaponRifle::GetShotStartEndPoints(
@@ -67,9 +66,9 @@ void AWeaponRifle::GetShotStartEndPoints(
     Super::GetShotStartEndPoints(HitResult, StartPoint, EndPoint);
 
     // Add spread at the end of LineTrace:
-    const auto HalfConeRadius = FMath::DegreesToRadians(BulletSpread);
+    const auto ConeRadius = FMath::DegreesToRadians(BulletSpread);
     FVector TraceDirection = (EndPoint - StartPoint) / WeaponRange;
-    TraceDirection = FMath::VRandCone(TraceDirection, HalfConeRadius);
+    TraceDirection = FMath::VRandCone(TraceDirection, ConeRadius);
     EndPoint = StartPoint + TraceDirection * WeaponRange;
 }
 
@@ -101,4 +100,6 @@ void AWeaponRifle::SpawnTraceFX(const FVector& EndPoint)
         UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), TraceFX, StartPoint);
 
     if (TraceFXComponent) TraceFXComponent->SetNiagaraVariableVec3(TraceTargetName, EndPoint);
+
+    ImpactFXComponent->PlayImpactFX(RifleHitResult);
 }
