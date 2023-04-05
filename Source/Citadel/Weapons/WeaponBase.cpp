@@ -31,6 +31,7 @@ void AWeaponBase::BeginPlay()
     Super::BeginPlay();
 
     AmmoInActiveClip = ClipSize;
+    AmmoInInventory = InitialAmmoInInventory;
 }
 
 AController* AWeaponBase::GetOwnerController()
@@ -105,6 +106,26 @@ void AWeaponBase::StopFire()
 void AWeaponBase::Unfire()
 {
     bNowFiring = false;
+}
+
+void AWeaponBase::Reload()
+{
+    AmmoInActiveClip = AmmoInActiveClip + TakeAmmoFromInventory(ClipSize - AmmoInActiveClip);
+}
+
+int32 AWeaponBase::TakeAmmoFromInventory(int32 Amount)
+{
+    if (AmmoInInventory < Amount)
+    {
+        Amount = AmmoInInventory;
+        AmmoInInventory = 0;
+        return Amount;
+    }
+    else
+    {
+        AmmoInInventory -= Amount;
+        return Amount;
+    }
 }
 
 void AWeaponBase::CallShootFunction()

@@ -8,26 +8,9 @@
 
 class AWeaponBase;
 
-// Stores and changes info about all types of ammo player's inventory.
-USTRUCT(BlueprintType)
-struct FAmmoDataHandler
-{
-    GENERATED_BODY()
-
-public:
-    int32 GetAmmoRifle() { return this->RifleAmmo; };
-    void AddAmmoRifle(int32 Amount) { this->RifleAmmo += Amount; };
-    int32 TakeAmmoRifle(int32 Amount);
-
-    int32 GetAmmoRocketLauncher() { return this->RocketLauncherAmmo; };
-    void AddAmmoRocketLauncher(int32 Amount) { this->RocketLauncherAmmo += Amount; };
-    int32 TakeAmmoRocketLauncher(int32 Amount);
-
-private:
-    int32 RifleAmmo = 120;
-    int32 RocketLauncherAmmo = 4;
-};
-
+/*
+Class for interaction between the player and his weapon.
+*/
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class CITADEL_API UWeaponComponent : public UActorComponent
 {
@@ -35,8 +18,6 @@ class CITADEL_API UWeaponComponent : public UActorComponent
 
 public:
     UWeaponComponent();
-
-    FAmmoDataHandler AmmoDataHandler;
 
     void StartFire();
     void StopFire();
@@ -49,7 +30,7 @@ public:
     UFUNCTION()
     void ReloadActiveWeapon();
     UFUNCTION(BlueprintPure)
-    int32 GetActiveWeaponTotalAmmo();
+    int32 GetActiveWeaponAmmoInInventory();
     UFUNCTION(BlueprintPure)
     int32 GetActiveWeaponAmmoInClip();
 

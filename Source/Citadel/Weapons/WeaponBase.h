@@ -85,13 +85,25 @@ private:
     // AMMO
     // ----------
 public:
-    void Reload(int32 Amount) { this->AmmoInActiveClip = Amount; };
+    // Reloads active weapon.
+    void Reload();
     int32 GetAmmoInActiveClip() { return this->AmmoInActiveClip; };
     int32 GetWeaponClipSize() { return ClipSize; }
     int32 DecreaseAmmoInActiveClip(int32 Amount) { return AmmoInActiveClip -= Amount; };
+    int32 GetAmmoInInventory() { return this->AmmoInInventory; };
+    void AddAmmoInInventory(int32 Amount) { this->AmmoInInventory += Amount; };
+
+    // Tries to take the required amount of ammo from the inventory.
+    // Returns how much ammo was taken.
+    int32 TakeAmmoFromInventory(int32 Amount);
 
 protected:
+private:
+    int32 AmmoInActiveClip;  // == ClipSize when BeginPlay()
+    int32 AmmoInInventory;   // ammo for this Weapon in Player's inventory
+
     UPROPERTY(EditDefaultsOnly, Category = "Weapon Parameters")
-    int32 AmmoInActiveClip;  // = ClipSize in BeginPlay()
     int32 ClipSize = 30;
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon Parameters")
+    int32 InitialAmmoInInventory = 0;
 };
