@@ -19,6 +19,9 @@ class CITADEL_API UWeaponComponent : public UActorComponent
 public:
     UWeaponComponent();
 
+    TArray<AWeaponBase*> CharacterWeapons;  // weapon in inventory
+    AWeaponBase* ActiveWeapon;              // weapon in hands
+
     void StartFire();
     void StopFire();
     void SwitchWeapon();
@@ -50,9 +53,6 @@ private:
     FName ActiveWeaponSocketName = TEXT("WeaponSocket_r");
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     FName ArmoryWeaponSocketName = TEXT("ArmorySocket");
-
-    TArray<AWeaponBase*> CharacterWeapons;  // weapon in inventory
-    AWeaponBase* ActiveWeapon;              // weapon in hands
 
     void SetupWeapon();  // TODO: need to decompose!
 };

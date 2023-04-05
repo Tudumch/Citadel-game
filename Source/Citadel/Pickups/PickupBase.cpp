@@ -34,8 +34,10 @@ void APickupBase::NotifyActorBeginOverlap(AActor* OtherActor)
     Super::NotifyActorBeginOverlap(OtherActor);
 
     APawn* Pawn = Cast<APawn>(OtherActor);
-    GivePickupTo(Pawn);
-    StartRespawnCooldown();
+    if (GivePickupTo(Pawn))
+    {
+        StartRespawnCooldown();
+    }
 }
 
 void APickupBase::StartRespawnCooldown()
