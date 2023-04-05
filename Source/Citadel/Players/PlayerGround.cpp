@@ -67,6 +67,9 @@ void APlayerGround::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
     PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &APlayerGround::LookUp);
     PlayerInputComponent->BindAxis(TEXT("LookRight"), this, &APlayerGround::LookRight);
 
+    // ---------
+    // WEAPONS:
+
     PlayerInputComponent->BindAction(
         TEXT("Fire"), IE_Pressed, WeaponComponent, &UWeaponComponent::StartFire);
     PlayerInputComponent->BindAction(
@@ -78,7 +81,20 @@ void APlayerGround::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
     PlayerInputComponent->BindAction(
         TEXT("ReloadWeapon"), IE_Pressed, WeaponComponent, &UWeaponComponent::ReloadActiveWeapon);
 
-    // Stance toggling:
+    DECLARE_DELEGATE_OneParam(FSwitchWeaponInputParams,
+        int32);  // to pass an attribute to a function by reference below
+    PlayerInputComponent->BindAction<FSwitchWeaponInputParams>(TEXT("SwitchWeapon01"), IE_Pressed,
+        WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 0);
+    PlayerInputComponent->BindAction<FSwitchWeaponInputParams>(TEXT("SwitchWeapon02"), IE_Pressed,
+        WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 1);
+    PlayerInputComponent->BindAction<FSwitchWeaponInputParams>(TEXT("SwitchWeapon03"), IE_Pressed,
+        WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 2);
+    PlayerInputComponent->BindAction<FSwitchWeaponInputParams>(TEXT("SwitchWeapon04"), IE_Pressed,
+        WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 3);
+
+    // ----------
+    // STANCE TOGGLING:
+
     DECLARE_DELEGATE_OneParam(FToggleStanceInputParams,
         PlayerStances);  // to pass an attribute to a function by reference below
     PlayerInputComponent->BindAction<FToggleStanceInputParams>(
@@ -88,7 +104,9 @@ void APlayerGround::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
     PlayerInputComponent->BindAction<FToggleStanceInputParams>(
         TEXT("Sprint"), IE_Released, this, &APlayerGround::ToggleStance, PlayerStances::Jogging);
 
-    // Zoom:
+    // ----------
+    // ZOOM:
+
     DECLARE_DELEGATE_OneParam(
         FZoomInputParams, bool);  // to pass an attribute to a function by reference below
     PlayerInputComponent->BindAction<FZoomInputParams>(

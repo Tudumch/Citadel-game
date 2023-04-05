@@ -71,6 +71,8 @@ void UWeaponComponent::StopFire()
 
 void UWeaponComponent::SwitchWeaponToIndex(int32 Index)
 {
+    if (Index >= CharacterWeapons.Num() || Index < 0) return;
+
     APlayerGround* Player = Cast<APlayerGround>(GetOwner());
     if (!Player) return;
 
@@ -79,10 +81,7 @@ void UWeaponComponent::SwitchWeaponToIndex(int32 Index)
         ActiveWeapon->AttachToComponent(Player->GetMesh(),
             FAttachmentTransformRules::KeepRelativeTransform, ArmoryWeaponSocketName);
 
-    // ActiveWeaponIdx = (ActiveWeaponIdx + 1) % CharacterWeapons.Num();
-
     ActiveWeapon = CharacterWeapons[Index];
-
     ActiveWeapon->AttachToComponent(Player->GetMesh(),
         FAttachmentTransformRules::KeepRelativeTransform, ActiveWeaponSocketName);
 }
