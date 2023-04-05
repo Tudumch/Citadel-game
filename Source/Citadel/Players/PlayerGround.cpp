@@ -71,8 +71,10 @@ void APlayerGround::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
         TEXT("Fire"), IE_Pressed, WeaponComponent, &UWeaponComponent::StartFire);
     PlayerInputComponent->BindAction(
         TEXT("Fire"), IE_Released, WeaponComponent, &UWeaponComponent::StopFire);
-    PlayerInputComponent->BindAction(
-        TEXT("SwitchWeapon"), IE_Pressed, WeaponComponent, &UWeaponComponent::SwitchWeapon);
+    PlayerInputComponent->BindAction(TEXT("SwitchWeaponNext"), IE_Pressed, WeaponComponent,
+        &UWeaponComponent::SwitchWeaponToNext);
+    PlayerInputComponent->BindAction(TEXT("SwitchWeaponPrevious"), IE_Pressed, WeaponComponent,
+        &UWeaponComponent::SwitchWeaponToPrevious);
     PlayerInputComponent->BindAction(
         TEXT("ReloadWeapon"), IE_Pressed, WeaponComponent, &UWeaponComponent::ReloadActiveWeapon);
 

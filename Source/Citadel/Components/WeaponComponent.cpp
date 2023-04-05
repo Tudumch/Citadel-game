@@ -25,36 +25,23 @@ void UWeaponComponent::SetupWeapon()
     APlayerGround* Player = Cast<APlayerGround>(GetOwner());
     if (!Player) return;
 
+    // If Player does not have any initial weapons in array - log error:
     if (WeaponClasses.Num() == 0)
     {
-        UE_LOG(Log_WeaponComponent, Error, TEXT("SetupWeapon: %s: Default Weapons has not set!"),
+        UE_LOG(Log_WeaponComponent, Error, TEXT("SetupWeapon: %s: default weapons has not set!"),
             *Player->GetName());
         return;
     }
 
+    // Spawning and adding to Player's inventory default weapons:
     FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
-
     for (auto WeaponClass : WeaponClasses)
     {
         AWeaponBase* Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
-
-        Weapon->AttachToComponent(Player->GetMesh(),
-            FAttachmentTransformRules::KeepRelativeTransform, ArmoryWeaponSocketName);
-
-        Weapon->SetOwner(Player);
-        CharacterWeapons.Add(Weapon);
+        AddWeaponToPlayer(Weapon);
     }
 
-    ActiveWeapon = CharacterWeapons[ActiveWeaponIdx];
-    if (!ActiveWeapon)
-    {
-        UE_LOG(Log_WeaponComponent, Error, TEXT("SetupWeapon: %s: Can't get active weapon!"),
-            *Player->GetName());
-        return;
-    }
-
-    ActiveWeapon->AttachToComponent(Player->GetMesh(),
-        FAttachmentTransformRules::KeepRelativeTransform, ActiveWeaponSocketName);
+    SwitchWeaponToIndex(ActiveWeaponIdx);
 }
 
 void UWeaponComponent::StartFire()
@@ -82,25 +69,52 @@ void UWeaponComponent::StopFire()
         WeaponCasted->StopFire();
 }
 
-void UWeaponComponent::SwitchWeapon()
+void UWeaponComponent::SwitchWeaponToIndex(int32 Index)
 {
     APlayerGround* Player = Cast<APlayerGround>(GetOwner());
     if (!Player) return;
 
-    ActiveWeapon->AttachToComponent(Player->GetMesh(),
-        FAttachmentTransformRules::KeepRelativeTransform, ArmoryWeaponSocketName);
+    // putting the active weapon in the inventory:
+    if (ActiveWeapon)
+        ActiveWeapon->AttachToComponent(Player->GetMesh(),
+            FAttachmentTransformRules::KeepRelativeTransform, ArmoryWeaponSocketName);
 
-    ActiveWeaponIdx = (ActiveWeaponIdx + 1) % CharacterWeapons.Num();
+    // ActiveWeaponIdx = (ActiveWeaponIdx + 1) % CharacterWeapons.Num();
 
-    ActiveWeapon = CharacterWeapons[ActiveWeaponIdx];
+    ActiveWeapon = CharacterWeapons[Index];
 
     ActiveWeapon->AttachToComponent(Player->GetMesh(),
         FAttachmentTransformRules::KeepRelativeTransform, ActiveWeaponSocketName);
 }
 
+void UWeaponComponent::SwitchWeaponToNext()
+{
+    ActiveWeaponIdx = fabs((ActiveWeaponIdx + 1) % CharacterWeapons.Num());
+    SwitchWeaponToIndex(ActiveWeaponIdx);
+}
+
+void UWeaponComponent::SwitchWeaponToPrevious()
+{
+    ActiveWeaponIdx = fabs((ActiveWeaponIdx - 1) % CharacterWeapons.Num());
+    SwitchWeaponToIndex(ActiveWeaponIdx);
+}
+
 void UWeaponComponent::ToggleZoom(bool ZoomON)
 {
     ActiveWeapon->ZoomFOV(ZoomON);
+}
+
+void UWeaponComponent::AddWeaponToPlayer(AWeaponBase* Weapon)
+{
+
+    APlayerGround* Player = Cast<APlayerGround>(GetOwner());
+    if (!Player) return;
+
+    Weapon->AttachToComponent(Player->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform,
+        ArmoryWeaponSocketName);
+
+    Weapon->SetOwner(Player);
+    CharacterWeapons.Add(Weapon);
 }
 
 void UWeaponComponent::ReloadActiveWeapon()

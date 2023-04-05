@@ -16,16 +16,24 @@ class CITADEL_API UWeaponComponent : public UActorComponent
 {
     GENERATED_BODY()
 
+private:
+    int32 ActiveWeaponIdx = 0;  // index of the current weapon in hands
+
 public:
     UWeaponComponent();
 
-    TArray<AWeaponBase*> CharacterWeapons;  // weapon in inventory
+    TArray<AWeaponBase*> CharacterWeapons;  // weapons in inventory
     AWeaponBase* ActiveWeapon;              // weapon in hands
 
     void StartFire();
     void StopFire();
-    void SwitchWeapon();
+    void SwitchWeaponToIndex(int32 Index);
+    void SwitchWeaponToNext();
+    void SwitchWeaponToPrevious();
     void ToggleZoom(bool ZoomON);
+
+    // Adds Weapon to Player's inventory.
+    void AddWeaponToPlayer(AWeaponBase* Weapon);
 
     // ----------
     // AMMO
@@ -39,7 +47,8 @@ public:
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-    TArray<TSubclassOf<AWeaponBase>> WeaponClasses;
+    TArray<TSubclassOf<AWeaponBase>>
+        WeaponClasses;  // what weapons does the Player have after respawn
 
     virtual void BeginPlay() override;
 
@@ -47,12 +56,11 @@ protected:
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
-    int32 ActiveWeaponIdx = 0;  // index of the current weapon in hands
-
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     FName ActiveWeaponSocketName = TEXT("WeaponSocket_r");
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     FName ArmoryWeaponSocketName = TEXT("ArmorySocket");
 
-    void SetupWeapon();  // TODO: need to decompose!
+    // Setups weapons in inventory after Player's respawn.
+    void SetupWeapon();
 };
