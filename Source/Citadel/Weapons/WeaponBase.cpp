@@ -60,7 +60,11 @@ void AWeaponBase::GetShotStartEndPoints(
         StartPoint = SkeletalMesh->GetSocketLocation(MuzzleSocketName);
     }
 
+    const auto ConeRadius =
+        FMath::DegreesToRadians(BulletSpread);  // spread at the end of LineTrace
+
     FVector TraceDirection = ViewRotation.Vector();
+    TraceDirection = FMath::VRandCone(TraceDirection, ConeRadius);
     StartPoint = StartPoint + TraceDirection * 100;  // offset for avoid player collision
     EndPoint = StartPoint + TraceDirection * WeaponRange;
 

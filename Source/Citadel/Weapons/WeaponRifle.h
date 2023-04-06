@@ -19,8 +19,6 @@ public:
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon Parameters")
-    float BulletSpread = 1.5f;
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon Parameters")
     float HeadshotMultiplier = 10.f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VFX")
@@ -33,8 +31,6 @@ protected:
 
     virtual bool Shoot() override;
     virtual void MakeDamageToPawn(APawn* Pawn);
-    virtual void GetShotStartEndPoints(
-        FHitResult& HitResult, FVector& StartPoint, FVector& EndPoint) override;
 
 private:
     UPROPERTY(EditAnywhere)

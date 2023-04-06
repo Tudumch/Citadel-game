@@ -24,7 +24,9 @@ public:
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon Parameters")
-    int32 WeaponRange = 2000;
+    int32 WeaponRange = 10000;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon Parameters")
+    float BulletSpread = 1.5f;
 
     // ----------
     // BLUEPRINT COMPONENTS

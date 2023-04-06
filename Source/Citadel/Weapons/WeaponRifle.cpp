@@ -60,18 +60,6 @@ void AWeaponRifle::MakeDamageToPawn(APawn* Pawn)
     }
 }
 
-void AWeaponRifle::GetShotStartEndPoints(
-    FHitResult& HitResult, FVector& StartPoint, FVector& EndPoint)
-{
-    Super::GetShotStartEndPoints(HitResult, StartPoint, EndPoint);
-
-    // Add spread at the end of LineTrace:
-    const auto ConeRadius = FMath::DegreesToRadians(BulletSpread);
-    FVector TraceDirection = (EndPoint - StartPoint) / WeaponRange;
-    TraceDirection = FMath::VRandCone(TraceDirection, ConeRadius);
-    EndPoint = StartPoint + TraceDirection * WeaponRange;
-}
-
 bool AWeaponRifle::ZoomFOV(bool ZoomON)
 {
     APlayerControllerGround* PlayerController = Cast<APlayerControllerGround>(GetOwnerController());
