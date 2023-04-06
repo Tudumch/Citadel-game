@@ -23,8 +23,6 @@ public:
     virtual bool ZoomFOV(bool ZoomON) { return false; };
 
 protected:
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon Parameters")
-    int32 WeaponRange = 10000;
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon Parameters")
     float BulletSpread = 1.5f;
 
@@ -55,6 +53,9 @@ protected:
     virtual void GetShotStartEndPoints(
         FHitResult& HitResult, FVector& StartPoint, FVector& EndPoint);
     virtual void PrintDebugInfo(FHitResult& HitResult) const;
+
+private:
+    int32 WeaponRange = 50000;  // LineTrace length
 
     // ----------
     // FIRERATE
