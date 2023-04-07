@@ -36,8 +36,9 @@ void AWeaponProjectile::BeginPlay()
 
     check(ProjectileMovementComponent);
     check(CollisionComponent);
+    check(GetWorld())
 
-    AlignForwardVectorWithOwner();
+        AlignForwardVectorWithOwner();
 
     ProjectileMovementComponent->Velocity =
         ShotDirection * ProjectileMovementComponent->InitialSpeed;

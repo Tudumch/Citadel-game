@@ -44,12 +44,12 @@ protected:
 
     virtual void BeginPlay() override;
 
+    UFUNCTION()
+    virtual void OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
+        UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 private:
     FVector ShotDirection;
-
-    UFUNCTION()
-    void OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
-        UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
     void AlignForwardVectorWithOwner();
 };
