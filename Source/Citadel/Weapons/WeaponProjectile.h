@@ -10,44 +10,46 @@ class USphereComponent;
 class UProjectileMovementComponent;
 class UImpactFXComponent;
 
+/*
+Parent Class for all projectiles.
+*/
 UCLASS()
 class CITADEL_API AWeaponProjectile : public AActor
 {
-	GENERATED_BODY()
-	
-public:	
-	AWeaponProjectile();
+    GENERATED_BODY()
 
-	void SetShotDirection(FVector& Direction) {ShotDirection = Direction;}
+public:
+    AWeaponProjectile();
+
+    void SetShotDirection(FVector& Direction) { ShotDirection = Direction; }
 
 protected:
-	UPROPERTY(EditAnywhere, Category="Weapon")
-	USphereComponent* CollisionComponent;
+    UPROPERTY(EditAnywhere)
+    USphereComponent* CollisionComponent;
 
-	UPROPERTY(EditAnywhere, Category="Weapon")
-	UStaticMeshComponent* MeshComponent;
+    UPROPERTY(EditAnywhere)
+    UStaticMeshComponent* MeshComponent;
 
-	UPROPERTY(EditAnywhere, Category="Weapon")
-	UProjectileMovementComponent* ProjectileMovementComponent;
+    UPROPERTY(EditAnywhere)
+    UProjectileMovementComponent* ProjectileMovementComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Weapon")
-	float DamageRadius = 200.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    float DamageRadius = 200.f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Weapon")
-	float DamageAmount = 50.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    float DamageAmount = 50.f;
 
-	virtual void BeginPlay() override;
+    virtual void BeginPlay() override;
 
 private:
-	FVector ShotDirection;
+    FVector ShotDirection;
 
-	UPROPERTY(EditAnywhere)
-	UImpactFXComponent* ImpactFXComponent;
+    UPROPERTY(EditAnywhere)
+    UImpactFXComponent* ImpactFXComponent;
 
-	UFUNCTION()
-	void OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, FVector NormalImpulse, 
-		const FHitResult& Hit);
+    UFUNCTION()
+    void OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
+        UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-	void AlignForwardVectorWithOwner();
+    void AlignForwardVectorWithOwner();
 };
