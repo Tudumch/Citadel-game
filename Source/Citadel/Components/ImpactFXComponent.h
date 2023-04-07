@@ -6,23 +6,23 @@
 #include "Components/ActorComponent.h"
 #include "ImpactFXComponent.generated.h"
 
-
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class CITADEL_API UImpactFXComponent : public UActorComponent
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-public:	
-	UImpactFXComponent();
+public:
+    UImpactFXComponent();
 
-	void PlayImpactFX(const FHitResult& Hit);
+    // Uses for projectiles.
+    void PlayImpactFX();
+    // Uses for hitscans.
+    void PlayImpactFX(const FHitResult& Hit);
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "VFX")
-	UParticleSystem* ImpactParticle;
+    UPROPERTY(EditAnywhere, Category = "VFX")
+    UParticleSystem* ImpactParticle;
 
-	UPROPERTY(EditAnywhere, Category="VFX")
-	USoundBase* ImpactSound;
-
-		
+    UPROPERTY(EditAnywhere, Category = "VFX")
+    USoundBase* ImpactSound;
 };

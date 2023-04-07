@@ -33,6 +33,9 @@ protected:
     UPROPERTY(EditAnywhere)
     UProjectileMovementComponent* ProjectileMovementComponent;
 
+    UPROPERTY(EditAnywhere)
+    UImpactFXComponent* ImpactFXComponent;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     float DamageRadius = 200.f;
 
@@ -43,9 +46,6 @@ protected:
 
 private:
     FVector ShotDirection;
-
-    UPROPERTY(EditAnywhere)
-    UImpactFXComponent* ImpactFXComponent;
 
     UFUNCTION()
     void OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
