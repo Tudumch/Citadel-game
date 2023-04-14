@@ -14,7 +14,7 @@ void AWeaponGrenade::BeginPlay()
 
     // Set explosion Timer
     GetWorldTimerManager().SetTimer(
-        ExplosionDelayTimerHandle, this, &ThisClass::Explode, ExplosionDelay, true);
+        ExplosionDelayTimerHandle, this, &ThisClass::Explode, ExplosionDelay, false);
 }
 
 void AWeaponGrenade::Explode()
@@ -39,7 +39,6 @@ void AWeaponGrenade::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* 
 
 void AWeaponGrenade::PlayExplosionFX()
 {
-    UGameplayStatics::SpawnEmitterAtLocation(
-        this, ExplosionParticle, GetOwner()->GetActorLocation());
-    UGameplayStatics::PlaySoundAtLocation(this, ExplosionSound, GetOwner()->GetActorLocation());
+    UGameplayStatics::SpawnEmitterAtLocation(this, ExplosionParticle, this->GetActorLocation());
+    UGameplayStatics::PlaySoundAtLocation(this, ExplosionSound, this->GetActorLocation());
 }

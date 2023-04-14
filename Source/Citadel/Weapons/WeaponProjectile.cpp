@@ -36,14 +36,14 @@ void AWeaponProjectile::BeginPlay()
 
     check(ProjectileMovementComponent);
     check(CollisionComponent);
-    check(GetWorld())
+    check(GetWorld());
 
-        AlignForwardVectorWithOwner();
+    AlignForwardVectorWithOwner();
 
     ProjectileMovementComponent->Velocity =
         ShotDirection * ProjectileMovementComponent->InitialSpeed;
 
-    SetLifeSpan(3.f);
+    SetLifeSpan(20.f);
 
     CollisionComponent->OnComponentHit.AddDynamic(this, &AWeaponProjectile::OnProjectileHit);
 }
@@ -62,9 +62,6 @@ void AWeaponProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AActo
 
     UGameplayStatics::ApplyRadialDamage(GetWorld(), DamageAmount, GetActorLocation(), DamageRadius,
         UDamageType::StaticClass(), {}, this, OwnerController, false);
-
-    // DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 36,
-    // 	FColor::Red, false, 0.5f);
 
     Destroy();
 }
