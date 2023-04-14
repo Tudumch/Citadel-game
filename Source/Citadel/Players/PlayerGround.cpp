@@ -80,6 +80,8 @@ void APlayerGround::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
         &UWeaponComponent::SwitchWeaponToPrevious);
     PlayerInputComponent->BindAction(
         TEXT("ReloadWeapon"), IE_Pressed, WeaponComponent, &UWeaponComponent::ReloadActiveWeapon);
+    PlayerInputComponent->BindAction(
+        TEXT("ThrowGrenade"), IE_Pressed, WeaponComponent, &UWeaponComponent::ThrowGrenade);
 
     DECLARE_DELEGATE_OneParam(FSwitchWeaponInputParams,
         int32);  // to pass an attribute to a function by reference below

@@ -5,6 +5,7 @@
 #include "Weapons/WeaponBase.h"
 #include "Weapons/WeaponRifle.h"
 #include "Weapons/WeaponRocketLauncher.h"
+#include "Weapons/WeaponGrenade.h"
 #include "Players/PlayerGround.h"
 
 DEFINE_LOG_CATEGORY_STATIC(Log_WeaponComponent, All, All);
@@ -101,6 +102,32 @@ void UWeaponComponent::SwitchWeaponToPrevious()
 void UWeaponComponent::ToggleZoom(bool ZoomON)
 {
     ActiveWeapon->ZoomFOV(ZoomON);
+}
+
+void UWeaponComponent::ThrowGrenade()
+{
+    if (GrenadesInInventory <= 0) return;
+
+    FVector ViewLocation;
+    FRotator ViewRotation;
+    GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(ViewLocation, ViewRotation);
+
+    FVector Direction = ViewRotation.Vector();
+    FVector Offset = Direction * 100;  // to avoid player collisions during spawn
+
+    FTransform SpawnLocation(FRotator::ZeroRotator, GetOwner()->GetActorLocation() + Offset);
+
+    AWeaponProjectile* Projectile =
+        GetWorld()->SpawnActorDeferred<AWeaponProjectile>(GrenadesType, SpawnLocation);
+
+    if (Projectile)
+    {
+        Projectile->SetShotDirection(Direction);
+        Projectile->SetOwner(GetOwner());
+        Projectile->FinishSpawning(SpawnLocation);  // calls Actor's constructor
+    }
+
+    GrenadesInInventory -= 1;
 }
 
 void UWeaponComponent::AddWeaponToPlayer(AWeaponBase* Weapon)

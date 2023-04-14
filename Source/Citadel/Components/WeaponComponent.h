@@ -7,6 +7,7 @@
 #include "WeaponComponent.generated.h"
 
 class AWeaponBase;
+class AWeaponGrenade;
 
 /*
 Class for interaction between the player and his weapon.
@@ -31,6 +32,7 @@ public:
     void SwitchWeaponToNext();
     void SwitchWeaponToPrevious();
     void ToggleZoom(bool ZoomON);
+    void ThrowGrenade();
 
     // Adds Weapon to Player's inventory.
     void AddWeaponToPlayer(AWeaponBase* Weapon);
@@ -56,6 +58,11 @@ protected:
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    TSubclassOf<AWeaponGrenade> GrenadesType;
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    int32 GrenadesInInventory = 0;
+
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     FName ActiveWeaponSocketName = TEXT("WeaponSocket_r");
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")

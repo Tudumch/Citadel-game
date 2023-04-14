@@ -23,8 +23,6 @@ public:
 
     void SetShotDirection(FVector& Direction) { ShotDirection = Direction; }
 
-    FVector ShotDirection;
-
 protected:
     UPROPERTY(EditAnywhere)
     USphereComponent* CollisionComponent;
@@ -51,5 +49,7 @@ protected:
         UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 private:
+    FVector ShotDirection;
+
     void AlignForwardVectorWithOwner();
 };
