@@ -158,6 +158,22 @@ int32 UWeaponComponent::GetActiveWeaponAmmoInClip()
     return ActiveWeapon->GetAmmoInActiveClip();
 }
 
+bool UWeaponComponent::AddGrenadesInInventory(int32 Amount)
+{
+    if ((GrenadesInInventory + Amount) > MaxGrenadesInInventory) return false;
+
+    GrenadesInInventory = FMath::Clamp(GrenadesInInventory + Amount, 0, MaxGrenadesInInventory);
+    return true;
+}
+
+bool UWeaponComponent::RemoveGrenadesFromInventory(int32 Amount)
+{
+    if ((GrenadesInInventory - Amount) < 0) return false;
+
+    GrenadesInInventory = FMath::Clamp(GrenadesInInventory - Amount, 0, MaxGrenadesInInventory);
+    return true;
+}
+
 void UWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     ActiveWeapon = nullptr;

@@ -38,7 +38,7 @@ public:
     void AddWeaponToPlayer(AWeaponBase* Weapon);
 
     // ----------
-    // AMMO
+    // WEAPON AMMO
 
     UFUNCTION()
     void ReloadActiveWeapon();
@@ -46,6 +46,16 @@ public:
     int32 GetActiveWeaponAmmoInInventory();
     UFUNCTION(BlueprintPure)
     int32 GetActiveWeaponAmmoInClip();
+
+    // ----------
+    // GRENADES
+
+    UFUNCTION(BlueprintPure)
+    int32 GetGrenadesInInventory() { return GrenadesInInventory; };
+    UFUNCTION()
+    bool AddGrenadesInInventory(int32 Amount);
+    UFUNCTION()
+    bool RemoveGrenadesFromInventory(int32 Amount);
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
@@ -62,6 +72,8 @@ private:
     TSubclassOf<AWeaponGrenade> GrenadesType;
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     int32 GrenadesInInventory = 0;
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    int32 MaxGrenadesInInventory = 3;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     FName ActiveWeaponSocketName = TEXT("WeaponSocket_r");
