@@ -156,7 +156,7 @@ void AWeaponBase::PrintDebugInfo(FHitResult& HitResult) const
     if (HitResult.bBlockingHit)
     {
         UE_LOG(Log_Weapon, VeryVerbose, TEXT("Pew! %s hits %s!"), *GetOwner()->GetName(),
-            *HitResult.Actor->GetName());
+            *HitResult.GetActor()->GetName());
     }
     else
     {

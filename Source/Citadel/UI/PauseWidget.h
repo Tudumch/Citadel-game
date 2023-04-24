@@ -17,7 +17,6 @@ class CITADEL_API UPauseWidget : public UUserWidget
     GENERATED_BODY()
 
 public:
-
 protected:
     UPROPERTY(meta = (BindWidget))
     UButton* ResumeButton;
@@ -25,7 +24,8 @@ protected:
     UPROPERTY(meta = (BindWidget))
     UButton* MainMenuButton;
 
-    virtual void NativeOnInitialized() override; // BeginPlay analog for Widgets
+    // BeginPlay analog for Widgets
+    virtual void NativeOnInitialized() override;
 
 private:
     void OnMatchStateChanged(CitadelMatchState State);

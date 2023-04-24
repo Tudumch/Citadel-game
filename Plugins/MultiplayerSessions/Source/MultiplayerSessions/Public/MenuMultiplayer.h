@@ -28,8 +28,11 @@ public:
 
 protected:
     virtual void NativeOnInitialized() override;  // begin play analog for widgets
-    virtual void OnLevelRemovedFromWorld(
-        ULevel* InLevel, UWorld* InWorld) override;  // default UE callback
+    virtual void NativeDestruct() override;       // calls when map switches
+
+    // TODO: delete after migrating to UE 5.1:
+    // virtual void OnLevelRemovedFromWorld(
+    //     ULevel* InLevel, UWorld* InWorld) override;  // default UE callback
 
     // Callbacks for custom delegates
     void OnFindSessions(

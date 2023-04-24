@@ -185,7 +185,7 @@ void APlayerGround::ToggleStance(PlayerStances Stance)
 
 void APlayerGround::UpdateHealthRenderText()
 {
-    HealthTextRender->SetText(FString::SanitizeFloat(HealthComponent->GetHealth()));
+    HealthTextRender->SetText(FText::AsNumber(HealthComponent->GetHealth()));
 }
 
 void APlayerGround::OnDeath()
