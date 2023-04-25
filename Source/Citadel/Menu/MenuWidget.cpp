@@ -8,6 +8,8 @@
 
 #include "CitadelGameInstance.h"
 
+DEFINE_LOG_CATEGORY_STATIC(Log_MenuWidget, All, All);
+
 void UMenuWidget::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
@@ -27,7 +29,7 @@ void UMenuWidget::OnStartGameClicked()
 
     if (GameInstance->GetStartLevelName().IsNone())
     {
-        UE_LOG(LogTemp, Error, TEXT("Startup level name not set!"));
+        UE_LOG(Log_MenuWidget, Error, TEXT("Startup level name not set!"));
         return;
     }
 
