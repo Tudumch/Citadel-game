@@ -8,6 +8,7 @@
 
 bool APickupHandProjectile::GivePickupTo(APawn* Pawn)
 {
+    Super::GivePickupTo(Pawn);
     return TryToAddAmmo(Pawn);
 }
 

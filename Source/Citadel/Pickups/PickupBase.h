@@ -39,10 +39,16 @@ protected:
     // Enables pickup collision and visibility
     virtual void Respawn();
 
+    // Spawns PickupSound
+    virtual void SpawnVFX();
+
 private:
     UPROPERTY(EditAnywhere)
     USphereComponent* Collision;
 
     UPROPERTY(EditAnywhere)
     float RotationSpeed = 3.f;
+
+    UPROPERTY(EditAnywhere, Category = "FX")
+    USoundBase* PickupSound;
 };

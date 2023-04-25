@@ -2,6 +2,7 @@
 
 #include "Pickups/PickupBase.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 APickupBase::APickupBase()
 {
@@ -36,6 +37,7 @@ void APickupBase::NotifyActorBeginOverlap(AActor* OtherActor)
     APawn* Pawn = Cast<APawn>(OtherActor);
     if (GivePickupTo(Pawn))
     {
+        SpawnVFX();
         StartRespawnCooldown();
     }
 }
@@ -55,7 +57,15 @@ void APickupBase::Respawn()
     Collision->SetVisibility(true, true);
 }
 
+void APickupBase::SpawnVFX()
+{
+    if (PickupSound)
+    {
+        UGameplayStatics::SpawnSoundAtLocation(GetWorld(), PickupSound, this->GetActorLocation());
+    }
+}
+
 bool APickupBase::GivePickupTo(APawn* Pawn)
 {
-    return false;
+    return true;
 }

@@ -9,6 +9,7 @@ DEFINE_LOG_CATEGORY_STATIC(Log_PickupAmmo, All, All);
 
 bool APickupAmmo::GivePickupTo(APawn* Pawn)
 {
+    Super::GivePickupTo(Pawn);
     return TryToAddAmmo(Pawn);
 }
 

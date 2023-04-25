@@ -7,6 +7,8 @@ DEFINE_LOG_CATEGORY_STATIC(Log_PickupHealth, All, All);
 
 bool APickupHealth::GivePickupTo(APawn* Pawn)
 {
+    Super::GivePickupTo(Pawn);
+
     UE_LOG(Log_PickupHealth, Verbose, TEXT("Health Pickup was taken by %s"), *Pawn->GetName());
 
     if (TryToRestoreHealth(Pawn))
