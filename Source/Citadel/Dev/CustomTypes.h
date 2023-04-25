@@ -7,39 +7,39 @@
 USTRUCT(BlueprintType)
 struct FGameData
 {
-	GENERATED_USTRUCT_BODY()
+    GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Game",
-		meta=(ClampMin="1", ClampMax="100"));
-	int32 PlayersNum = 2;
+    // How many players will be spawned in the game
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game",
+        meta = (ClampMin = "1", ClampMax = "100"));
+    int32 PlayersNum = 2;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Game",
-		meta=(ClampMin="1", ClampMax="10"));
-	int32 RoundsNum = 2;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game",
+        meta = (ClampMin = "1", ClampMax = "10"));
+    int32 RoundsNum = 2;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Game",
-		meta=(ClampMin="3", ClampMax="300"));
-	int32 RoundDuration = 15; // in seconds
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game",
+        meta = (ClampMin = "3", ClampMax = "300"));
+    int32 RoundDuration = 15;  // in seconds
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Game",
-		meta=(ClampMin="0", ClampMax="30"));
-	int32 TimeToPlayerRespawn = 5; // in seconds
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game",
+        meta = (ClampMin = "0", ClampMax = "30"));
+    int32 TimeToPlayerRespawn = 5;  // in seconds
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Teams")
-	FLinearColor DefaultTeamColor = FLinearColor::Red;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Teams")
+    FLinearColor DefaultTeamColor = FLinearColor::Red;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Teams")
-	TArray<FLinearColor> TeamColors;
-
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Teams")
+    TArray<FLinearColor> TeamColors;
 };
 
 UENUM(BlueprintType)
-enum class CitadelMatchState: uint8
+enum class CitadelMatchState : uint8
 {
-	WaitingToStart = 0,
-	InProgress,
-	Pause,
-	GameOver
+    WaitingToStart = 0,
+    InProgress,
+    Pause,
+    GameOver
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchStateChangedSignature, CitadelMatchState);

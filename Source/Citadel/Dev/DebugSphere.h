@@ -8,31 +8,33 @@
 
 class USceneComponent;
 
+/*
+Debag sphere for rendering in the game.
+*/
 UCLASS()
 class CITADEL_API ADebugSphere : public AActor
 {
-	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	ADebugSphere();
+    GENERATED_BODY()
+
+public:
+    // Sets default values for this actor's properties
+    ADebugSphere();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+public:
+    // Called every frame
+    virtual void Tick(float DeltaTime) override;
 
 protected:
-	USceneComponent* SceneComponent;
+    USceneComponent* SceneComponent;
 
-	UPROPERTY(EditAnywhere)
-	float SphereRadius = 300;
-	UPROPERTY(EditAnywhere)
-	float SphereSegments = 32;
-	UPROPERTY(EditAnywhere)
-	FColor SphereColor = FColor::Red;
-
+    UPROPERTY(EditAnywhere)
+    float SphereRadius = 300;
+    UPROPERTY(EditAnywhere)
+    float SphereSegments = 32;
+    UPROPERTY(EditAnywhere)
+    FColor SphereColor = FColor::Red;
 };

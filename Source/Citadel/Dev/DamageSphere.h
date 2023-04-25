@@ -7,17 +7,17 @@
 #include "DamageSphere.generated.h"
 
 /**
- * 
+ * Spherical trigger that deals damage.
  */
 UCLASS()
 class CITADEL_API ADamageSphere : public ADebugSphere
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	virtual void Tick(float DeltaTime) override;
-	
+    virtual void Tick(float DeltaTime) override;
+
 private:
-	UPROPERTY(EditAnywhere)
-	float Damage = 0.1f;
+    UPROPERTY(EditAnywhere)
+    float Damage = 0.1f;
 };

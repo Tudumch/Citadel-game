@@ -25,7 +25,7 @@ protected:
     UButton* MainMenuButton;
 
     // BeginPlay analog for Widgets
-    virtual void NativeOnInitialized() override;
+    virtual bool Initialize() override;
 
 private:
     void OnMatchStateChanged(CitadelMatchState State);

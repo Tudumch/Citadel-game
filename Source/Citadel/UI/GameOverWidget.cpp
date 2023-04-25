@@ -10,24 +10,22 @@
 #include "CitadelGameModeBase.h"
 #include "UI/StatisticWidget.h"
 
-void UGameOverWidget::NativeOnInitialized()
+bool UGameOverWidget::Initialize()
 {
     Super::Initialize();
-    ACitadelGameModeBase* GameMode =
-        Cast<ACitadelGameModeBase>(GetWorld()->GetAuthGameMode());
+    ACitadelGameModeBase* GameMode = Cast<ACitadelGameModeBase>(GetWorld()->GetAuthGameMode());
 
     if (GameMode)
     {
-        GameMode->OnMatchStateChanged.AddUObject(
-            this, &UGameOverWidget::OnMatchStateChanged);
+        GameMode->OnMatchStateChanged.AddUObject(this, &UGameOverWidget::OnMatchStateChanged);
     }
 
-    if (ResetButton)
-        ResetButton->OnClicked.AddDynamic(this, &UGameOverWidget::OnResetLevel);
+    if (ResetButton) ResetButton->OnClicked.AddDynamic(this, &UGameOverWidget::OnResetLevel);
 
     if (MainMenuButton)
-        MainMenuButton->OnClicked.AddDynamic(
-            this, &UGameOverWidget::OnClickMainMenu);
+        MainMenuButton->OnClicked.AddDynamic(this, &UGameOverWidget::OnClickMainMenu);
+
+    return true;
 }
 
 void UGameOverWidget::OnMatchStateChanged(CitadelMatchState State)
@@ -42,30 +40,25 @@ void UGameOverWidget::UpdatePlayerStatistic()
 {
     if (!GetWorld() || !PlayerStatBox) return;
 
-    PlayerStatBox
-        ->ClearChildren();  // just in case if PlayerStatBox is not empty
+    PlayerStatBox->ClearChildren();  // just in case if PlayerStatBox is not empty
 
     for (auto It = GetWorld()->GetControllerIterator(); It; It++)
     {
         auto Controller = It->Get();
         if (!Controller) continue;
 
-        APlayerStateBase* PlayerState =
-            Cast<APlayerStateBase>(Controller->PlayerState);
+        APlayerStateBase* PlayerState = Cast<APlayerStateBase>(Controller->PlayerState);
 
-        UStatisticWidget* StatisticWidget = CreateWidget<UStatisticWidget>(
-            GetWorld(), PlayerStatisticWidgetClass);
+        UStatisticWidget* StatisticWidget =
+            CreateWidget<UStatisticWidget>(GetWorld(), PlayerStatisticWidgetClass);
         if (!StatisticWidget) continue;
 
-        StatisticWidget->SetPlayerName(
-            FText::FromString(PlayerState->GetPlayerName()));
+        StatisticWidget->SetPlayerName(FText::FromString(PlayerState->GetPlayerName()));
 
-        StatisticWidget->SetKills(
-            FText::FromString(FString::FromInt(PlayerState->GetKillsNum())));
+        StatisticWidget->SetKills(FText::FromString(FString::FromInt(PlayerState->GetKillsNum())));
         StatisticWidget->SetDeaths(
             FText::FromString(FString::FromInt(PlayerState->GetDeathsNum())));
-        StatisticWidget->SetTeam(
-            FText::FromString(FString::FromInt(PlayerState->GetTeamID())));
+        StatisticWidget->SetTeam(FText::FromString(FString::FromInt(PlayerState->GetTeamID())));
 
         StatisticWidget->SetPlayerIndicatorVisibility(
             Controller->IsPlayerController());  // highlight for player row

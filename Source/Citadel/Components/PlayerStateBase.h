@@ -7,30 +7,29 @@
 #include "PlayerStateBase.generated.h"
 
 /**
- * 
+ * Class for working with player meta-information.
  */
 UCLASS()
 class CITADEL_API APlayerStateBase : public APlayerState
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	int32 GetDeathsNum() {return this->DeathsNum;}
-	void AddDeath() {this->DeathsNum++;}
+    int32 GetDeathsNum() { return this->DeathsNum; }
+    void AddDeath() { this->DeathsNum++; }
 
-	int32 GetKillsNum() {return this->KillsNum;}
-	void AddKill() {this->KillsNum++;}
+    int32 GetKillsNum() { return this->KillsNum; }
+    void AddKill() { this->KillsNum++; }
 
-	int32 GetTeamID() {return this->TeamID;}
-	void SetTeamID(int32 Value) {this->TeamID = Value;}
+    int32 GetTeamID() { return this->TeamID; }
+    void SetTeamID(int32 Value) { this->TeamID = Value; }
 
-	FLinearColor GetTeamColor() {return this->TeamColor;}
-	void SetTeamColor(FLinearColor Color) {this->TeamColor = Color;}
-	
+    FLinearColor GetTeamColor() { return this->TeamColor; }
+    void SetTeamColor(FLinearColor Color) { this->TeamColor = Color; }
+
 private:
-	int32 DeathsNum;
-	int32 KillsNum;
-	int32 TeamID;
-	FLinearColor TeamColor;
-
+    int32 DeathsNum;
+    int32 KillsNum;
+    int32 TeamID;
+    FLinearColor TeamColor;
 };

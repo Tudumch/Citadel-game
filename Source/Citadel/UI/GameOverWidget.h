@@ -18,7 +18,6 @@ class CITADEL_API UGameOverWidget : public UUserWidget
     GENERATED_BODY()
 
 public:
-
 protected:
     UPROPERTY(meta = (BindWidget))
     UVerticalBox* PlayerStatBox;
@@ -32,7 +31,8 @@ protected:
     UPROPERTY(meta = (BindWidget))
     UButton* MainMenuButton;
 
-    virtual void NativeOnInitialized() override; // BeginPlay analog for Widgets
+    // BeginPlay analog for Widgets
+    virtual bool Initialize() override;
 
 private:
     void OnMatchStateChanged(CitadelMatchState State);

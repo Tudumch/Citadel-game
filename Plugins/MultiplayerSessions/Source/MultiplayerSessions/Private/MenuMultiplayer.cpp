@@ -34,14 +34,6 @@ void UMenuMultiplayer::NativeDestruct()
     Super::NativeDestruct();
 }
 
-// TODO: delete after migrating to UE 5.1:
-//// Calls when level changes
-// void UMenuMultiplayer::OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld)
-//{
-//     MenuTearDown();
-//     Super::OnLevelRemovedFromWorld(InLevel, InWorld);
-// }
-
 void UMenuMultiplayer::MenuSetup(
     int32 NumberOfPublicConnections, FString TypeOfMatch, FString LobbyPath)
 {

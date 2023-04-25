@@ -7,11 +7,11 @@
 
 #include "CitadelGameModeBase.h"
 
-void UPauseWidget::NativeOnInitialized()
+bool UPauseWidget::Initialize()
 {
     Super::Initialize();
 
-    if (!GetWorld()) return;
+    if (!GetWorld()) return false;
 
     ACitadelGameModeBase* GameMode = Cast<ACitadelGameModeBase>(GetWorld()->GetAuthGameMode());
 
@@ -24,6 +24,8 @@ void UPauseWidget::NativeOnInitialized()
 
     if (MainMenuButton)
         MainMenuButton->OnClicked.AddDynamic(this, &UPauseWidget::OnClickMainMenuButton);
+
+    return true;
 }
 
 void UPauseWidget::OnMatchStateChanged(CitadelMatchState State) {}
