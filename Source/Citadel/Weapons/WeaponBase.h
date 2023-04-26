@@ -43,6 +43,10 @@ protected:
     UParticleSystem* MuzzleFlashParticle;
     UPROPERTY(EditAnywhere, Category = "FX")
     USoundBase* ShotSound;
+    UPROPERTY(EditAnywhere, Category = "FX")
+    USoundBase* ReloadSound;
+    UPROPERTY(EditAnywhere, Category = "FX")
+    USoundBase* NoAmmoSound;
 
     virtual void SpawnEffects();
 

@@ -75,7 +75,11 @@ void AWeaponBase::GetShotStartEndPoints(
 
 bool AWeaponBase::Shoot()
 {
-    if (GetAmmoInActiveClip() <= 0) return false;
+    if (GetAmmoInActiveClip() <= 0)
+    {
+        UGameplayStatics::SpawnSoundAttached(NoAmmoSound, SkeletalMesh, MuzzleSocketName);
+        return false;
+    }
 
     DecreaseAmmoInActiveClip(1);
     SpawnEffects();
@@ -119,6 +123,9 @@ void AWeaponBase::Reload()
 
 int32 AWeaponBase::TakeAmmoFromInventory(int32 Amount)
 {
+    if (ReloadSound && AmmoInInventory > 0)
+        UGameplayStatics::SpawnSoundAttached(ReloadSound, SkeletalMesh, MuzzleSocketName);
+
     if (AmmoInInventory < Amount)
     {
         Amount = AmmoInInventory;
