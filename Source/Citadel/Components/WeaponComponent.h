@@ -58,9 +58,9 @@ public:
     bool RemoveGrenadesFromInventory(int32 Amount);
 
 protected:
+    // Weapons that Player has at respawn
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-    TArray<TSubclassOf<AWeaponBase>>
-        WeaponClasses;  // what weapons does the Player have after respawn
+    TArray<TSubclassOf<AWeaponBase>> WeaponClasses;
 
     virtual void BeginPlay() override;
 
@@ -80,6 +80,19 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     FName ArmoryWeaponSocketName = TEXT("ArmorySocket");
 
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    UAnimMontage* WeaponEquipAnimation;
+
+    // If true - Player can't do some actions like firing, reloading etc..
+    bool bBlockingAnimationInProgress = false;
+
     // Setups weapons in inventory after Player's respawn.
     void SetupWeapon();
+
+    void PlayAnimMontage(UAnimMontage* AnimMontage);
+
+    // Binds AnimNotifies callbacks.
+    void SetupAnimNotifies();
+
+    void OnEquipFinished(USkeletalMeshComponent* SkeletalMesh);
 };

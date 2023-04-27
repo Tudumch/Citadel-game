@@ -7,6 +7,7 @@
 #include "Weapons/WeaponRocketLauncher.h"
 #include "Weapons/WeaponGrenade.h"
 #include "Players/PlayerGround.h"
+#include "Dev/AnimNotifies/EquipFinishedAnimNotify.h"
 
 DEFINE_LOG_CATEGORY_STATIC(Log_WeaponComponent, All, All);
 
@@ -19,6 +20,7 @@ void UWeaponComponent::BeginPlay()
 {
     Super::BeginPlay();
     SetupWeapon();
+    SetupAnimNotifies();
 }
 
 void UWeaponComponent::SetupWeapon()
@@ -45,6 +47,46 @@ void UWeaponComponent::SetupWeapon()
     SwitchWeaponToIndex(ActiveWeaponIdx);
 }
 
+void UWeaponComponent::PlayAnimMontage(UAnimMontage* AnimMontage)
+{
+
+    ACharacter* PlayerCharacter = Cast<ACharacter>(GetOwner());
+    if (!PlayerCharacter) return;
+
+    PlayerCharacter->PlayAnimMontage(AnimMontage);
+}
+
+void UWeaponComponent::SetupAnimNotifies()
+{
+    if (!WeaponEquipAnimation) return;
+
+    const TArray<FAnimNotifyEvent> NotifyEvents = WeaponEquipAnimation->Notifies;
+
+    for (auto NotifyEvent : NotifyEvents)
+    {
+        UEquipFinishedAnimNotify* EquipFinishedNotify =
+            Cast<UEquipFinishedAnimNotify>(NotifyEvent.Notify);
+        if (EquipFinishedNotify)
+        {
+            EquipFinishedNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnEquipFinished);
+            break;
+        }
+    }
+}
+
+void UWeaponComponent::OnEquipFinished(USkeletalMeshComponent* SkeletalMesh)
+{
+
+    ACharacter* PlayerCharacter = Cast<ACharacter>(GetOwner());
+    if (!PlayerCharacter) return;
+
+    if (PlayerCharacter->GetMesh() == SkeletalMesh)
+    {
+    }
+
+    bBlockingAnimationInProgress = false;
+}
+
 void UWeaponComponent::StartFire()
 {
     APlayerGround* Player = Cast<APlayerGround>(GetOwner());
@@ -62,7 +104,7 @@ void UWeaponComponent::StopFire()
 {
     APlayerGround* Player = Cast<APlayerGround>(GetOwner());
 
-    if (!Player) return;  // Player can't sprint and shoot at the same time
+    if (!Player) return;
 
     if (AWeaponRifle* WeaponCasted = Cast<AWeaponRifle>(ActiveWeapon)) WeaponCasted->StopFire();
 
@@ -72,7 +114,7 @@ void UWeaponComponent::StopFire()
 
 void UWeaponComponent::SwitchWeaponToIndex(int32 Index)
 {
-    if (Index >= CharacterWeapons.Num() || Index < 0) return;
+    if (bBlockingAnimationInProgress || Index >= CharacterWeapons.Num() || Index < 0) return;
 
     APlayerGround* Player = Cast<APlayerGround>(GetOwner());
     if (!Player) return;
@@ -85,16 +127,36 @@ void UWeaponComponent::SwitchWeaponToIndex(int32 Index)
     ActiveWeapon = CharacterWeapons[Index];
     ActiveWeapon->AttachToComponent(Player->GetMesh(),
         FAttachmentTransformRules::KeepRelativeTransform, ActiveWeaponSocketName);
+
+    if (WeaponEquipAnimation)
+    {
+        bBlockingAnimationInProgress = true;
+        PlayAnimMontage(WeaponEquipAnimation);
+    }
 }
 
 void UWeaponComponent::SwitchWeaponToNext()
 {
+    if (CharacterWeapons.Num() == 0)
+    {
+        UE_LOG(Log_WeaponComponent, Error,
+            TEXT("SwitchWeaponToNext: Character default weapons list is empty!"));
+        return;
+    }
+
     ActiveWeaponIdx = fabs((ActiveWeaponIdx + 1) % CharacterWeapons.Num());
     SwitchWeaponToIndex(ActiveWeaponIdx);
 }
 
 void UWeaponComponent::SwitchWeaponToPrevious()
 {
+    if (CharacterWeapons.Num() == 0)
+    {
+        UE_LOG(Log_WeaponComponent, Error,
+            TEXT("SwitchWeaponToPrevious: Character default weapons list is empty!"));
+        return;
+    }
+
     ActiveWeaponIdx = fabs((ActiveWeaponIdx - 1) % CharacterWeapons.Num());
     SwitchWeaponToIndex(ActiveWeaponIdx);
 }
@@ -132,7 +194,6 @@ void UWeaponComponent::ThrowGrenade()
 
 void UWeaponComponent::AddWeaponToPlayer(AWeaponBase* Weapon)
 {
-
     APlayerGround* Player = Cast<APlayerGround>(GetOwner());
     if (!Player) return;
 
@@ -145,16 +206,18 @@ void UWeaponComponent::AddWeaponToPlayer(AWeaponBase* Weapon)
 
 void UWeaponComponent::ReloadActiveWeapon()
 {
-    ActiveWeapon->Reload();
+    if (ActiveWeapon) ActiveWeapon->Reload();
 }
 
 int32 UWeaponComponent::GetActiveWeaponAmmoInInventory()
 {
+    if (!ActiveWeapon) return 0;
     return ActiveWeapon->GetAmmoInInventory();
 }
 
 int32 UWeaponComponent::GetActiveWeaponAmmoInClip()
 {
+    if (!ActiveWeapon) return 0;
     return ActiveWeapon->GetAmmoInActiveClip();
 }
 
