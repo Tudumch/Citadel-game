@@ -18,13 +18,17 @@ class CITADEL_API UWeaponComponent : public UActorComponent
     GENERATED_BODY()
 
 private:
-    int32 ActiveWeaponIdx = 0;  // index of the current weapon in hands
+    // Index of the current weapon in hands
+    int32 ActiveWeaponIdx = -1;  // initial value is -1 to switch weapons correctly
+                                 // when the player spawns (see SwitchWeaponToIndex logic)
 
 public:
     UWeaponComponent();
 
-    TArray<AWeaponBase*> CharacterWeapons;  // weapons in inventory
-    AWeaponBase* ActiveWeapon;              // weapon in hands
+    // Weapons in inventory
+    TArray<AWeaponBase*> CharacterWeapons;
+    // Weapon in hands
+    AWeaponBase* ActiveWeapon;
 
     void StartFire();
     void StopFire();

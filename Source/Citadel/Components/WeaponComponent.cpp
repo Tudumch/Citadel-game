@@ -44,7 +44,7 @@ void UWeaponComponent::SetupWeapon()
         AddWeaponToPlayer(Weapon);
     }
 
-    SwitchWeaponToIndex(ActiveWeaponIdx);
+    SwitchWeaponToIndex(0);
 }
 
 void UWeaponComponent::PlayAnimMontage(UAnimMontage* AnimMontage)
@@ -89,6 +89,8 @@ void UWeaponComponent::OnEquipFinished(USkeletalMeshComponent* SkeletalMesh)
 
 void UWeaponComponent::StartFire()
 {
+    if (bBlockingAnimationInProgress) return;
+
     APlayerGround* Player = Cast<APlayerGround>(GetOwner());
 
     if (!Player || Player->GetSprinting())
@@ -114,7 +116,11 @@ void UWeaponComponent::StopFire()
 
 void UWeaponComponent::SwitchWeaponToIndex(int32 Index)
 {
-    if (bBlockingAnimationInProgress || Index >= CharacterWeapons.Num() || Index < 0) return;
+    if (bBlockingAnimationInProgress || ActiveWeaponIdx == Index ||
+        Index >= CharacterWeapons.Num() || Index < 0)
+    {
+        return;
+    }
 
     APlayerGround* Player = Cast<APlayerGround>(GetOwner());
     if (!Player) return;
@@ -127,6 +133,7 @@ void UWeaponComponent::SwitchWeaponToIndex(int32 Index)
     ActiveWeapon = CharacterWeapons[Index];
     ActiveWeapon->AttachToComponent(Player->GetMesh(),
         FAttachmentTransformRules::KeepRelativeTransform, ActiveWeaponSocketName);
+    ActiveWeaponIdx = Index;
 
     if (WeaponEquipAnimation)
     {
@@ -144,8 +151,8 @@ void UWeaponComponent::SwitchWeaponToNext()
         return;
     }
 
-    ActiveWeaponIdx = fabs((ActiveWeaponIdx + 1) % CharacterWeapons.Num());
-    SwitchWeaponToIndex(ActiveWeaponIdx);
+    int32 NewActiveWeaponIdx = fabs((ActiveWeaponIdx + 1) % CharacterWeapons.Num());
+    SwitchWeaponToIndex(NewActiveWeaponIdx);
 }
 
 void UWeaponComponent::SwitchWeaponToPrevious()
@@ -157,8 +164,8 @@ void UWeaponComponent::SwitchWeaponToPrevious()
         return;
     }
 
-    ActiveWeaponIdx = fabs((ActiveWeaponIdx - 1) % CharacterWeapons.Num());
-    SwitchWeaponToIndex(ActiveWeaponIdx);
+    int32 NewActiveWeaponIdx = fabs((ActiveWeaponIdx - 1) % CharacterWeapons.Num());
+    SwitchWeaponToIndex(NewActiveWeaponIdx);
 }
 
 void UWeaponComponent::ToggleZoom(bool ZoomON)
