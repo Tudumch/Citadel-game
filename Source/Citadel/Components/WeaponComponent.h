@@ -87,6 +87,9 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     UAnimMontage* WeaponEquipAnimation;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    UAnimMontage* WeaponReloadAnimation;
+
     // If true - Player can't do some actions like firing, reloading etc..
     bool bBlockingAnimationInProgress = false;
 
@@ -96,7 +99,9 @@ private:
     void PlayAnimMontage(UAnimMontage* AnimMontage);
 
     // Binds AnimNotifies callbacks.
-    void SetupAnimNotifies();
+    void SetupAllAnimNotifies();
+    void SetupEquipAnimNotify();
+    void SetupReloadAnimNotify();
 
-    void OnEquipFinished(USkeletalMeshComponent* SkeletalMesh);
+    void OnAnimationFinished(USkeletalMeshComponent* SkeletalMesh);
 };

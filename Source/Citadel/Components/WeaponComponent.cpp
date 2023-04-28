@@ -20,7 +20,7 @@ void UWeaponComponent::BeginPlay()
 {
     Super::BeginPlay();
     SetupWeapon();
-    SetupAnimNotifies();
+    SetupAllAnimNotifies();
 }
 
 void UWeaponComponent::SetupWeapon()
@@ -56,7 +56,13 @@ void UWeaponComponent::PlayAnimMontage(UAnimMontage* AnimMontage)
     PlayerCharacter->PlayAnimMontage(AnimMontage);
 }
 
-void UWeaponComponent::SetupAnimNotifies()
+void UWeaponComponent::SetupAllAnimNotifies()
+{
+    SetupEquipAnimNotify();
+    SetupReloadAnimNotify();
+}
+
+void UWeaponComponent::SetupEquipAnimNotify()
 {
     if (!WeaponEquipAnimation) return;
 
@@ -68,21 +74,37 @@ void UWeaponComponent::SetupAnimNotifies()
             Cast<UAnimationFinishedAnimNotify>(NotifyEvent.Notify);
         if (EquipFinishedNotify)
         {
-            EquipFinishedNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnEquipFinished);
+            EquipFinishedNotify->OnNotified.AddUObject(
+                this, &UWeaponComponent::OnAnimationFinished);
             break;
         }
     }
 }
 
-void UWeaponComponent::OnEquipFinished(USkeletalMeshComponent* SkeletalMesh)
+void UWeaponComponent::SetupReloadAnimNotify()
+{
+    if (!WeaponReloadAnimation) return;
+
+    const TArray<FAnimNotifyEvent> NotifyEvents = WeaponReloadAnimation->Notifies;
+
+    for (auto NotifyEvent : NotifyEvents)
+    {
+        UAnimationFinishedAnimNotify* ReloadFinishedNotify =
+            Cast<UAnimationFinishedAnimNotify>(NotifyEvent.Notify);
+        if (ReloadFinishedNotify)
+        {
+            ReloadFinishedNotify->OnNotified.AddUObject(
+                this, &UWeaponComponent::OnAnimationFinished);
+            break;
+        }
+    }
+}
+
+void UWeaponComponent::OnAnimationFinished(USkeletalMeshComponent* SkeletalMesh)
 {
 
     ACharacter* PlayerCharacter = Cast<ACharacter>(GetOwner());
     if (!PlayerCharacter) return;
-
-    if (PlayerCharacter->GetMesh() == SkeletalMesh)
-    {
-    }
 
     bBlockingAnimationInProgress = false;
 }
@@ -213,7 +235,15 @@ void UWeaponComponent::AddWeaponToPlayer(AWeaponBase* Weapon)
 
 void UWeaponComponent::ReloadActiveWeapon()
 {
-    if (ActiveWeapon) ActiveWeapon->Reload();
+    if (bBlockingAnimationInProgress || !ActiveWeapon) return;
+
+    ActiveWeapon->Reload();
+
+    if (WeaponReloadAnimation)
+    {
+        bBlockingAnimationInProgress = true;
+        PlayAnimMontage(WeaponReloadAnimation);
+    }
 }
 
 int32 UWeaponComponent::GetActiveWeaponAmmoInInventory()
