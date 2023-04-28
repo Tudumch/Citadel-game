@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "EquipFinishedAnimNotify.generated.h"
+#include "AnimationFinishedAnimNotify.generated.h"
 
 /**
  * Notifying about the end of playing the equipment animation.
@@ -13,7 +13,7 @@
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnNotifySignature, USkeletalMeshComponent*);
 
 UCLASS()
-class CITADEL_API UEquipFinishedAnimNotify : public UAnimNotify
+class CITADEL_API UAnimationFinishedAnimNotify : public UAnimNotify
 {
     GENERATED_BODY()
 

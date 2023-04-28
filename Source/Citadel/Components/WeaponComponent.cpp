@@ -7,7 +7,7 @@
 #include "Weapons/WeaponRocketLauncher.h"
 #include "Weapons/WeaponGrenade.h"
 #include "Players/PlayerGround.h"
-#include "Dev/AnimNotifies/EquipFinishedAnimNotify.h"
+#include "Dev/AnimNotifies/AnimationFinishedAnimNotify.h"
 
 DEFINE_LOG_CATEGORY_STATIC(Log_WeaponComponent, All, All);
 
@@ -64,8 +64,8 @@ void UWeaponComponent::SetupAnimNotifies()
 
     for (auto NotifyEvent : NotifyEvents)
     {
-        UEquipFinishedAnimNotify* EquipFinishedNotify =
-            Cast<UEquipFinishedAnimNotify>(NotifyEvent.Notify);
+        UAnimationFinishedAnimNotify* EquipFinishedNotify =
+            Cast<UAnimationFinishedAnimNotify>(NotifyEvent.Notify);
         if (EquipFinishedNotify)
         {
             EquipFinishedNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnEquipFinished);
