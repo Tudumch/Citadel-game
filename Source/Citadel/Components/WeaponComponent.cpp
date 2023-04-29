@@ -6,8 +6,10 @@
 #include "Weapons/WeaponRifle.h"
 #include "Weapons/WeaponRocketLauncher.h"
 #include "Weapons/WeaponGrenade.h"
+#include "Weapons/WeaponMeleeBase.h"
 #include "Players/PlayerGround.h"
 #include "Dev/AnimNotifies/AnimationFinishedAnimNotify.h"
+#include "Dev/AnimNotifies/AnimationStartedAnimNotify.h"
 
 DEFINE_LOG_CATEGORY_STATIC(Log_WeaponComponent, All, All);
 
@@ -58,43 +60,56 @@ void UWeaponComponent::PlayAnimMontage(UAnimMontage* AnimMontage)
 
 void UWeaponComponent::SetupAllAnimNotifies()
 {
-    SetupEquipAnimNotify();
-    SetupReloadAnimNotify();
+    // TODO: cleanup this mess:
+    SubscribeToAnimationFinishedNotify(WeaponReloadAnimation);
+    SubscribeToAnimationFinishedNotify(WeaponEquipAnimation);
+    SubscribeToAnimationFinishedNotify(MeleeHitAnimation);
+    SubscribeToAnimationStartedNotify(WeaponReloadAnimation);
+    SubscribeToAnimationStartedNotify(WeaponEquipAnimation);
+    SubscribeToAnimationStartedNotify(MeleeHitAnimation);
 }
 
-void UWeaponComponent::SetupEquipAnimNotify()
+void UWeaponComponent::SubscribeToAnimationFinishedNotify(UAnimMontage* AnimMontage)
 {
-    if (!WeaponEquipAnimation) return;
+    if (!AnimMontage) return;
 
-    const TArray<FAnimNotifyEvent> NotifyEvents = WeaponEquipAnimation->Notifies;
+    const TArray<FAnimNotifyEvent> NotifyEvents = AnimMontage->Notifies;
 
     for (auto NotifyEvent : NotifyEvents)
     {
-        UAnimationFinishedAnimNotify* EquipFinishedNotify =
+        UAnimationFinishedAnimNotify* AnimFinishedNotify =
             Cast<UAnimationFinishedAnimNotify>(NotifyEvent.Notify);
-        if (EquipFinishedNotify)
+        if (AnimFinishedNotify)
         {
-            EquipFinishedNotify->OnNotified.AddUObject(
-                this, &UWeaponComponent::OnAnimationFinished);
-            break;
+            if (AnimMontage == MeleeHitAnimation)
+            {
+                AnimFinishedNotify->OnNotified.AddUObject(
+                    this, &UWeaponComponent::OnHitKnifeAnimationFinished);
+                break;
+            }
+            else
+            {
+                AnimFinishedNotify->OnNotified.AddUObject(
+                    this, &UWeaponComponent::OnAnimationFinished);
+                break;
+            }
         }
     }
 }
 
-void UWeaponComponent::SetupReloadAnimNotify()
+void UWeaponComponent::SubscribeToAnimationStartedNotify(UAnimMontage* AnimMontage)
 {
-    if (!WeaponReloadAnimation) return;
+    if (!AnimMontage) return;
 
-    const TArray<FAnimNotifyEvent> NotifyEvents = WeaponReloadAnimation->Notifies;
+    const TArray<FAnimNotifyEvent> NotifyEvents = AnimMontage->Notifies;
 
     for (auto NotifyEvent : NotifyEvents)
     {
-        UAnimationFinishedAnimNotify* ReloadFinishedNotify =
-            Cast<UAnimationFinishedAnimNotify>(NotifyEvent.Notify);
-        if (ReloadFinishedNotify)
+        UAnimationStartedAnimNotify* AnimStartedNotify =
+            Cast<UAnimationStartedAnimNotify>(NotifyEvent.Notify);
+        if (AnimStartedNotify)
         {
-            ReloadFinishedNotify->OnNotified.AddUObject(
-                this, &UWeaponComponent::OnAnimationFinished);
+            AnimStartedNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnAnimationStarted);
             break;
         }
     }
@@ -102,7 +117,6 @@ void UWeaponComponent::SetupReloadAnimNotify()
 
 void UWeaponComponent::OnAnimationFinished(USkeletalMeshComponent* SkeletalMesh)
 {
-
     ACharacter* PlayerCharacter = Cast<ACharacter>(GetOwner());
     if (!PlayerCharacter) return;
 
@@ -159,7 +173,6 @@ void UWeaponComponent::SwitchWeaponToIndex(int32 Index)
 
     if (WeaponEquipAnimation)
     {
-        bBlockingAnimationInProgress = true;
         PlayAnimMontage(WeaponEquipAnimation);
     }
 }
@@ -221,6 +234,41 @@ void UWeaponComponent::ThrowGrenade()
     GrenadesInInventory -= 1;
 }
 
+void UWeaponComponent::HitKnife()
+{
+    if (!WeaponMeleeType || bBlockingAnimationInProgress) return;
+
+    APlayerGround* Player = Cast<APlayerGround>(GetOwner());
+    if (!Player) return;
+
+    ActiveWeapon->SetActorHiddenInGame(true);
+
+    MeleeWeapon = GetWorld()->SpawnActor<AWeaponMeleeBase>(WeaponMeleeType);
+    MeleeWeapon->AttachToComponent(Player->GetMesh(),
+        FAttachmentTransformRules::KeepRelativeTransform, ActiveWeaponSocketName);
+
+    if (MeleeHitAnimation)
+    {
+        PlayAnimMontage(MeleeHitAnimation);
+    }
+}
+
+void UWeaponComponent::OnHitKnifeAnimationFinished(USkeletalMeshComponent* SkeletalMesh)
+{
+    if (!MeleeWeapon || !ActiveWeapon) return;
+
+    MeleeWeapon->Destroy();
+    ActiveWeapon->SetActorHiddenInGame(false);
+    bBlockingAnimationInProgress = false;
+}
+
+void UWeaponComponent::OnAnimationStarted(USkeletalMeshComponent* SkeletalMesh)
+{
+
+    StopFire();
+    bBlockingAnimationInProgress = true;
+}
+
 void UWeaponComponent::AddWeaponToPlayer(AWeaponBase* Weapon)
 {
     APlayerGround* Player = Cast<APlayerGround>(GetOwner());
@@ -241,7 +289,6 @@ void UWeaponComponent::ReloadActiveWeapon()
 
     if (WeaponReloadAnimation)
     {
-        bBlockingAnimationInProgress = true;
         PlayAnimMontage(WeaponReloadAnimation);
     }
 }

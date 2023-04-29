@@ -4,16 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "AnimationFinishedAnimNotify.generated.h"
-
-/**
- * Notifying about the end of playing the animation.
- */
+#include "AnimationStartedAnimNotify.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnNotifySignature, USkeletalMeshComponent*);
 
+/**
+ * Notifying about the start of playing the animation.
+ */
 UCLASS()
-class CITADEL_API UAnimationFinishedAnimNotify : public UAnimNotify
+class CITADEL_API UAnimationStartedAnimNotify : public UAnimNotify
 {
     GENERATED_BODY()
 

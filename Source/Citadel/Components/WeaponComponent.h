@@ -8,6 +8,7 @@
 
 class AWeaponBase;
 class AWeaponGrenade;
+class AWeaponMeleeBase;
 
 /*
 Class for interaction between the player and his weapon.
@@ -37,6 +38,7 @@ public:
     void SwitchWeaponToPrevious();
     void ToggleZoom(bool ZoomON);
     void ThrowGrenade();
+    void HitKnife();
 
     // Adds Weapon to Player's inventory.
     void AddWeaponToPlayer(AWeaponBase* Weapon);
@@ -73,6 +75,11 @@ protected:
 
 private:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    TSubclassOf<AWeaponMeleeBase> WeaponMeleeType;
+
+    AWeaponMeleeBase* MeleeWeapon;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     TSubclassOf<AWeaponGrenade> GrenadesType;
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     int32 GrenadesInInventory = 0;
@@ -86,9 +93,10 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     UAnimMontage* WeaponEquipAnimation;
-
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     UAnimMontage* WeaponReloadAnimation;
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    UAnimMontage* MeleeHitAnimation;
 
     // If true - Player can't do some actions like firing, reloading etc..
     bool bBlockingAnimationInProgress = false;
@@ -98,10 +106,21 @@ private:
 
     void PlayAnimMontage(UAnimMontage* AnimMontage);
 
-    // Binds AnimNotifies callbacks.
+    // Setups binding to several AnimNotifies.
     void SetupAllAnimNotifies();
-    void SetupEquipAnimNotify();
-    void SetupReloadAnimNotify();
 
+    // Finds AnimationFinishedAnimNotify from all AnimMontage's Notifies and binds calling function
+    // to it.
+    void SubscribeToAnimationFinishedNotify(UAnimMontage* AnimMontage);
+    // Finds AnimationStartedAnimNotify from all AnimMontage's Notifies and binds calling function
+    // to it.
+    void SubscribeToAnimationStartedNotify(UAnimMontage* AnimMontage);
+
+    // Switches bBlockingAnimationInProgress to false state.
     void OnAnimationFinished(USkeletalMeshComponent* SkeletalMesh);
+    // Hides melee weapon and unhides default weapon after HitKnife animation finishes to play.
+    void OnHitKnifeAnimationFinished(USkeletalMeshComponent* SkeletalMesh);
+
+    // Switches bBlockingAnimationInProgress to true state and calls StopFire function.
+    void OnAnimationStarted(USkeletalMeshComponent* SkeletalMesh);
 };
