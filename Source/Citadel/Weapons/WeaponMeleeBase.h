@@ -6,6 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "WeaponMeleeBase.generated.h"
 
+class USphereComponent;
+
+/*
+ * Parent class for all melee weapons.
+ */
 UCLASS()
 class CITADEL_API AWeaponMeleeBase : public AActor
 {
@@ -23,11 +28,14 @@ protected:
     UPROPERTY(EditAnywhere)
     USceneComponent* SceneComponent;
     UPROPERTY(EditAnywhere)
+    USphereComponent* CollisionComponent;
+    UPROPERTY(EditAnywhere)
     USkeletalMeshComponent* SkeletalMesh;
-    UPROPERTY(EditAnywhere)
-    FName BladeStartSocketName = TEXT("BladeStart_Socket");
-    UPROPERTY(EditAnywhere)
-    FName BladeEndSocketName = TEXT("BladeEnd_Socket");
+
+    UFUNCTION()
+    void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+        const FHitResult& SweepResult);
 
     // ----------
     // FX
@@ -37,4 +45,8 @@ protected:
     // Sound playing after successfull hit
     UPROPERTY(EditAnywhere, Category = "FX")
     USoundBase* HitSound;
+
+private:
+    UPROPERTY(EditDefaultsOnly)
+    float DamageAmount = 100.f;
 };

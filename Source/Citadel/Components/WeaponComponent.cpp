@@ -246,11 +246,14 @@ void UWeaponComponent::HitKnife()
     MeleeWeapon = GetWorld()->SpawnActor<AWeaponMeleeBase>(WeaponMeleeType);
     MeleeWeapon->AttachToComponent(Player->GetMesh(),
         FAttachmentTransformRules::KeepRelativeTransform, ActiveWeaponSocketName);
+    MeleeWeapon->SetOwner(GetOwner());
 
     if (MeleeHitAnimation)
     {
         PlayAnimMontage(MeleeHitAnimation);
     }
+
+    MeleeWeapon->PlaySwingSound();
 }
 
 void UWeaponComponent::OnHitKnifeAnimationFinished(USkeletalMeshComponent* SkeletalMesh)
