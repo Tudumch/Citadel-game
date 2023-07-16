@@ -23,12 +23,12 @@ APlayerGround::APlayerGround(const class FObjectInitializer& ObjectInitializer)
 {
     PrimaryActorTick.bCanEverTick = true;
 
-    HealthComponent = CreateAbstractDefaultSubobject<UHealthComponent>(TEXT("Health"));
+    HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
 
-    HealthTextRender = CreateAbstractDefaultSubobject<UTextRenderComponent>(TEXT("HealthRenderer"));
+    HealthTextRender = CreateDefaultSubobject<UTextRenderComponent>(TEXT("HealthRenderer"));
     HealthTextRender->SetupAttachment(RootComponent);
 
-    WeaponComponent = CreateAbstractDefaultSubobject<UWeaponComponent>(TEXT("WeaponComponent"));
+    WeaponComponent = CreateDefaultSubobject<UWeaponComponent>(TEXT("WeaponComponent"));
 }
 
 void APlayerGround::BeginPlay()
