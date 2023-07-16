@@ -3,7 +3,9 @@
 #include "Citadel/Players/PlayerGround.h"
 
 #include "Components/CapsuleComponent.h"
-#include "Components/InputComponent.h"
+// #include "Components/InputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
@@ -15,7 +17,7 @@
 #include "Weapons/WeaponRifle.h"
 
 APlayerGround::APlayerGround(const class FObjectInitializer& ObjectInitializer)
-    // overriding CharacterMovement:
+    // overriding CharacterMovementComponent:
     : Super(ObjectInitializer.SetDefaultSubobjectClass<UCustomCharacterMovementComponent>(
           ACharacter::CharacterMovementComponentName))
 {
@@ -33,6 +35,7 @@ void APlayerGround::BeginPlay()
 {
     Super::BeginPlay();
     PlayerController = GetWorld()->GetFirstPlayerController();
+    ConnectMappingContext();
 
     SetupHealthComponent();
 }
@@ -56,16 +59,39 @@ void APlayerGround::SetupHealthComponent()
 }
 
 // --------------------------------------------------
-// INPUT FUNCTIONS
+// INPUTS
 // --------------------------------------------------
 void APlayerGround::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-    PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &APlayerGround::MoveForward);
-    PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &APlayerGround::MoveRight);
-    PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &APlayerGround::LookUp);
-    PlayerInputComponent->BindAxis(TEXT("LookRight"), this, &APlayerGround::LookRight);
+    if (UEnhancedInputComponent* EnhancedInputComponent =
+            CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+    {
+        EnhancedInputComponent->BindAction(
+            MoveIA, ETriggerEvent::Triggered, this, &ThisClass::Move);
+        EnhancedInputComponent->BindAction(
+            LookIA, ETriggerEvent::Triggered, this, &ThisClass::Look);
+
+        // ----------
+        // STANCE TOGGLING:
+
+        DECLARE_DELEGATE_OneParam(FToggleStanceInputParams,
+            PlayerStances);  // to pass an attribute to a function by reference below
+
+        EnhancedInputComponent->BindAction(CrouchIA, ETriggerEvent::Triggered, this,
+            &ThisClass::ToggleStance, PlayerStances::Crouching);
+        EnhancedInputComponent->BindAction(SprintIA, ETriggerEvent::Started, this,
+            &ThisClass::ToggleStance, PlayerStances::Sprinting);
+        EnhancedInputComponent->BindAction(SprintIA, ETriggerEvent::Completed, this,
+            &ThisClass::ToggleStance, PlayerStances::Jogging);
+    }
+
+    // TODO: delete
+    // PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &APlayerGround::MoveForward);
+    // PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &APlayerGround::MoveRight);
+    // PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &APlayerGround::LookUp);
+    // PlayerInputComponent->BindAxis(TEXT("LookRight"), this, &APlayerGround::LookRight);
 
     // ---------
     // WEAPONS:
@@ -96,17 +122,17 @@ void APlayerGround::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
     PlayerInputComponent->BindAction<FSwitchWeaponInputParams>(TEXT("SwitchWeapon04"), IE_Pressed,
         WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 3);
 
+    // TODO: delete
     // ----------
     // STANCE TOGGLING:
-
-    DECLARE_DELEGATE_OneParam(FToggleStanceInputParams,
-        PlayerStances);  // to pass an attribute to a function by reference below
-    PlayerInputComponent->BindAction<FToggleStanceInputParams>(
-        TEXT("Crouch"), IE_Pressed, this, &APlayerGround::ToggleStance, PlayerStances::Crouching);
-    PlayerInputComponent->BindAction<FToggleStanceInputParams>(
-        TEXT("Sprint"), IE_Pressed, this, &APlayerGround::ToggleStance, PlayerStances::Sprinting);
-    PlayerInputComponent->BindAction<FToggleStanceInputParams>(
-        TEXT("Sprint"), IE_Released, this, &APlayerGround::ToggleStance, PlayerStances::Jogging);
+    // DECLARE_DELEGATE_OneParam(FToggleStanceInputParams,
+    //    PlayerStances);  // to pass an attribute to a function by reference below
+    // PlayerInputComponent->BindAction<FToggleStanceInputParams>(
+    //    TEXT("Crouch"), IE_Pressed, this, &APlayerGround::ToggleStance, PlayerStances::Crouching);
+    // PlayerInputComponent->BindAction<FToggleStanceInputParams>(
+    //    TEXT("Sprint"), IE_Pressed, this, &APlayerGround::ToggleStance, PlayerStances::Sprinting);
+    // PlayerInputComponent->BindAction<FToggleStanceInputParams>(
+    //    TEXT("Sprint"), IE_Released, this, &APlayerGround::ToggleStance, PlayerStances::Jogging);
 
     // ----------
     // ZOOM:
@@ -119,26 +145,51 @@ void APlayerGround::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
         TEXT("ToggleZoom"), IE_Released, WeaponComponent, &UWeaponComponent::ToggleZoom, false);
 }
 
-void APlayerGround::MoveForward(float AxisValue)
-{
-    AddMovementInput(GetActorForwardVector(), AxisValue);
-}
+// TODO: delete
+// void APlayerGround::MoveForward(float AxisValue)
+//{
+//    AddMovementInput(GetActorForwardVector(), AxisValue);
+//}
+//
+// void APlayerGround::MoveRight(float AxisValue)
+//{
+//    if (bSprinting) return;  // player can't strafe while sprinting
+//
+//    AddMovementInput(GetActorRightVector() * AxisValue);
+//}
+//
+// void APlayerGround::LookUp(float AxisValue)
+//{
+//    AddControllerPitchInput(AxisValue);
+//}
+//
+// void APlayerGround::LookRight(float AxisValue)
+//{
+//    AddControllerYawInput(AxisValue);
+//}
 
-void APlayerGround::MoveRight(float AxisValue)
+void APlayerGround::Move(const FInputActionValue& Value)
 {
+    const FVector2D MovementVector = Value.Get<FVector2D>();
+    const FRotator Rotation = Controller->GetControlRotation();
+    const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
+
+    const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+    AddMovementInput(ForwardDirection, MovementVector.X);
+
     if (bSprinting) return;  // player can't strafe while sprinting
-
-    AddMovementInput(GetActorRightVector() * AxisValue);
+    const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+    AddMovementInput(RightDirection, MovementVector.Y);
 }
 
-void APlayerGround::LookUp(float AxisValue)
+void APlayerGround::Look(const FInputActionValue& Value)
 {
-    AddControllerPitchInput(AxisValue);
-}
-
-void APlayerGround::LookRight(float AxisValue)
-{
-    AddControllerYawInput(AxisValue);
+    const FVector2D LookAxisValue = Value.Get<FVector2D>();
+    if (GetController())
+    {
+        AddControllerYawInput(LookAxisValue.X);
+        AddControllerPitchInput(LookAxisValue.Y);
+    }
 }
 
 void APlayerGround::ToggleStance(PlayerStances Stance)
@@ -205,6 +256,19 @@ void APlayerGround::OnDeath()
     if (Controller) Controller->ChangeState(NAME_Spectating);
 
     SetLifeSpan(5.f);
+}
+
+void APlayerGround::ConnectMappingContext()
+{
+    if (PlayerController)
+    {
+        if (UEnhancedInputLocalPlayerSubsystem* InputSystem =
+                ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
+                    PlayerController->GetLocalPlayer()))
+        {
+            InputSystem->AddMappingContext(InputMappingContext, 0);
+        }
+    }
 }
 
 void APlayerGround::SetPlayerColor(FLinearColor Color)

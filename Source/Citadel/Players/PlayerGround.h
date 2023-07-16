@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/OnlineSessionInterface.h"
+#include "InputActionValue.h"
 
 #include "Weapons/WeaponBase.h"
 
@@ -16,6 +17,8 @@ class UCameraComponent;
 class UHealthComponent;
 class UTextRenderComponent;
 class UWeaponComponent;
+class UInputMappingContext;
+class UInputAction;
 
 /*
 Main Pawn class for Players and Bots.
@@ -28,14 +31,14 @@ class CITADEL_API APlayerGround : public ACharacter
 public:
     APlayerGround(const class FObjectInitializer& ObjectInitializer);
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UHealthComponent* HealthComponent;
+    UPROPERTY (VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+        UHealthComponent* HealthComponent;
 
     virtual void Tick(float DeltaTime) override;
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-    UFUNCTION(BlueprintCallable, Category = "TextRender")
-    void UpdateHealthRenderText();
+    UFUNCTION (BlueprintCallable, Category = "TextRender")
+        void UpdateHealthRenderText();
 
     // Changes the base color inside the Pawn's Material
     void SetPlayerColor(FLinearColor Color);
@@ -43,28 +46,56 @@ public:
     // ----------
     // PAWN INPUT FUNCTIONS
 
-    void MoveForward(float AxisValue);
-    void MoveRight(float AxisValue);
-    void LookUp(float AxisValue);
-    void LookRight(float AxisValue);
+    // TODO: delete
+    // void MoveForward(float AxisValue);
+    // void MoveRight(float AxisValue);
+    // void LookUp(float AxisValue);
+    // void LookRight(float AxisValue);
+
+    void Move(const FInputActionValue& Value);
+    void Look(const FInputActionValue& Value);
 
 protected:
-    UPROPERTY(EditDefaultsOnly, Category = "Materials")
-    FName MaterialColorName =
-        "BodyColor";  // name of the node that sets the base color of the material for the Pawn
+    UPROPERTY (EditDefaultsOnly, Category = "Materials")
+        FName MaterialColorName =
+            "BodyColor";  // name of the node that sets the base color of the material for the Pawn
 
     virtual void BeginPlay() override;
 
     // Disables Pawn's collision and sets spectating mode for Player Controller
     virtual void OnDeath();
 
+    // Connects EnhancedInputs's MappingContext to Player Controller
+    virtual void ConnectMappingContext();
+
+    // -----------------
+    // INPUT ACTIONS
+
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputMappingContext* InputMappingContext;
+
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputAction* MoveIA;
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputAction* CrouchIA;
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputAction* SprintIA;
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputAction* LookIA;
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputAction* FireIA;
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputAction* AimIA;
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputAction* ReloadIA;
+
 private:
     APlayerController* PlayerController;
 
-    UPROPERTY(EditAnywhere)
-    UTextRenderComponent* HealthTextRender;
-    UPROPERTY(EditAnywhere)
-    UWeaponComponent* WeaponComponent;
+    UPROPERTY (EditAnywhere)
+        UTextRenderComponent* HealthTextRender;
+    UPROPERTY (EditAnywhere)
+        UWeaponComponent* WeaponComponent;
 
     void SetupHealthComponent();
 
@@ -75,12 +106,21 @@ public:
     // ----------
     // GETTERS FOR USE IN ANIMBP
 
-    UFUNCTION(BlueprintPure)
-    bool GetCrouching() { return bCrouching; };
-    UFUNCTION(BlueprintPure)
-    bool GetJogginging() { return bJogging; };
-    UFUNCTION(BlueprintPure)
-    bool GetSprinting() { return bSprinting; };
+    UFUNCTION (BlueprintPure)
+        bool GetCrouching()
+        {
+            return bCrouching;
+        };
+    UFUNCTION (BlueprintPure)
+        bool GetJogginging()
+        {
+            return bJogging;
+        };
+    UFUNCTION (BlueprintPure)
+        bool GetSprinting()
+        {
+            return bSprinting;
+        };
 
 protected:
 private:
