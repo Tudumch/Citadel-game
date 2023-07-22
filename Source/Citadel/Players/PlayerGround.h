@@ -88,6 +88,24 @@ protected:
         UInputAction* AimIA;
     UPROPERTY (EditAnywhere, Category = "Input")
         UInputAction* ReloadIA;
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputAction* HitKnifeIA;
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputAction* ThrowGrenadeIA;
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputAction* ToggleZoomIA;
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputAction* SwitchWeaponToNextIA;
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputAction* SwitchWeaponToPreviousIA;
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputAction* SwitchWeaponToIndex00IA;
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputAction* SwitchWeaponToIndex01IA;
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputAction* SwitchWeaponToIndex02IA;
+    UPROPERTY (EditAnywhere, Category = "Input")
+        UInputAction* SwitchWeaponToIndex03IA;
 
 private:
     APlayerController* PlayerController;

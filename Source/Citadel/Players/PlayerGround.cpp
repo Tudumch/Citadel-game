@@ -85,6 +85,47 @@ void APlayerGround::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
             &ThisClass::ToggleStance, PlayerStances::Sprinting);
         EnhancedInputComponent->BindAction(SprintIA, ETriggerEvent::Completed, this,
             &ThisClass::ToggleStance, PlayerStances::Jogging);
+
+        // ---------
+        // WEAPONS:
+
+        EnhancedInputComponent->BindAction(
+            FireIA, ETriggerEvent::Started, WeaponComponent, &UWeaponComponent::StartFire);
+        EnhancedInputComponent->BindAction(
+            FireIA, ETriggerEvent::Completed, WeaponComponent, &UWeaponComponent::StopFire);
+        EnhancedInputComponent->BindAction(ReloadIA, ETriggerEvent::Triggered, WeaponComponent,
+            &UWeaponComponent::ReloadActiveWeapon);
+        EnhancedInputComponent->BindAction(ThrowGrenadeIA, ETriggerEvent::Started, WeaponComponent,
+            &UWeaponComponent::ThrowGrenade);
+        EnhancedInputComponent->BindAction(
+            HitKnifeIA, ETriggerEvent::Started, WeaponComponent, &UWeaponComponent::HitKnife);
+
+        // ----------
+        // SWITCH WEAPON
+        EnhancedInputComponent->BindAction(SwitchWeaponToNextIA, ETriggerEvent::Triggered,
+            WeaponComponent, &UWeaponComponent::SwitchWeaponToNext);
+        EnhancedInputComponent->BindAction(SwitchWeaponToPreviousIA, ETriggerEvent::Triggered,
+            WeaponComponent, &UWeaponComponent::SwitchWeaponToPrevious);
+
+        DECLARE_DELEGATE_OneParam(FSwitchWeaponInputParams,
+            int32);  // to pass an attribute to a function by reference below
+        EnhancedInputComponent->BindAction(SwitchWeaponToIndex00IA, ETriggerEvent::Triggered,
+            WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 0);
+        EnhancedInputComponent->BindAction(SwitchWeaponToIndex01IA, ETriggerEvent::Triggered,
+            WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 1);
+        EnhancedInputComponent->BindAction(SwitchWeaponToIndex02IA, ETriggerEvent::Triggered,
+            WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 2);
+        EnhancedInputComponent->BindAction(SwitchWeaponToIndex03IA, ETriggerEvent::Triggered,
+            WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 3);
+
+        // ----------
+        // ZOOM:
+        DECLARE_DELEGATE_OneParam(
+            FZoomInputParams, bool);  // to pass an attribute to a function by reference below
+        EnhancedInputComponent->BindAction(ToggleZoomIA, ETriggerEvent::Started, WeaponComponent,
+            &UWeaponComponent::ToggleZoom, true);
+        EnhancedInputComponent->BindAction(ToggleZoomIA, ETriggerEvent::Completed, WeaponComponent,
+            &UWeaponComponent::ToggleZoom, false);
     }
 
     // TODO: delete
@@ -96,31 +137,35 @@ void APlayerGround::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
     // ---------
     // WEAPONS:
 
-    PlayerInputComponent->BindAction(
-        TEXT("Fire"), IE_Pressed, WeaponComponent, &UWeaponComponent::StartFire);
-    PlayerInputComponent->BindAction(
-        TEXT("Fire"), IE_Released, WeaponComponent, &UWeaponComponent::StopFire);
-    PlayerInputComponent->BindAction(TEXT("SwitchWeaponNext"), IE_Pressed, WeaponComponent,
-        &UWeaponComponent::SwitchWeaponToNext);
-    PlayerInputComponent->BindAction(TEXT("SwitchWeaponPrevious"), IE_Pressed, WeaponComponent,
-        &UWeaponComponent::SwitchWeaponToPrevious);
-    PlayerInputComponent->BindAction(
-        TEXT("ReloadWeapon"), IE_Pressed, WeaponComponent, &UWeaponComponent::ReloadActiveWeapon);
-    PlayerInputComponent->BindAction(
-        TEXT("ThrowGrenade"), IE_Pressed, WeaponComponent, &UWeaponComponent::ThrowGrenade);
-    PlayerInputComponent->BindAction(
-        TEXT("HitKnife"), IE_Pressed, WeaponComponent, &UWeaponComponent::HitKnife);
+    // PlayerInputComponent->BindAction(
+    //     TEXT("Fire"), IE_Pressed, WeaponComponent, &UWeaponComponent::StartFire);
+    // PlayerInputComponent->BindAction(
+    //     TEXT("Fire"), IE_Released, WeaponComponent, &UWeaponComponent::StopFire);
+    // PlayerInputComponent->BindAction(TEXT("SwitchWeaponNext"), IE_Pressed, WeaponComponent,
+    //    &UWeaponComponent::SwitchWeaponToNext);
+    // PlayerInputComponent->BindAction(TEXT("SwitchWeaponPrevious"), IE_Pressed, WeaponComponent,
+    //    &UWeaponComponent::SwitchWeaponToPrevious);
+    // PlayerInputComponent->BindAction(
+    //    TEXT("ReloadWeapon"), IE_Pressed, WeaponComponent, &UWeaponComponent::ReloadActiveWeapon);
+    // PlayerInputComponent->BindAction(
+    //    TEXT("ThrowGrenade"), IE_Pressed, WeaponComponent, &UWeaponComponent::ThrowGrenade);
+    // PlayerInputComponent->BindAction(
+    //    TEXT("HitKnife"), IE_Pressed, WeaponComponent, &UWeaponComponent::HitKnife);
 
-    DECLARE_DELEGATE_OneParam(FSwitchWeaponInputParams,
-        int32);  // to pass an attribute to a function by reference below
-    PlayerInputComponent->BindAction<FSwitchWeaponInputParams>(TEXT("SwitchWeapon01"), IE_Pressed,
-        WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 0);
-    PlayerInputComponent->BindAction<FSwitchWeaponInputParams>(TEXT("SwitchWeapon02"), IE_Pressed,
-        WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 1);
-    PlayerInputComponent->BindAction<FSwitchWeaponInputParams>(TEXT("SwitchWeapon03"), IE_Pressed,
-        WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 2);
-    PlayerInputComponent->BindAction<FSwitchWeaponInputParams>(TEXT("SwitchWeapon04"), IE_Pressed,
-        WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 3);
+    // DECLARE_DELEGATE_OneParam(FSwitchWeaponInputParams,
+    //     int32);  // to pass an attribute to a function by reference below
+    // PlayerInputComponent->BindAction<FSwitchWeaponInputParams>(TEXT("SwitchWeapon01"),
+    // IE_Pressed,
+    //     WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 0);
+    // PlayerInputComponent->BindAction<FSwitchWeaponInputParams>(TEXT("SwitchWeapon02"),
+    // IE_Pressed,
+    //     WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 1);
+    // PlayerInputComponent->BindAction<FSwitchWeaponInputParams>(TEXT("SwitchWeapon03"),
+    // IE_Pressed,
+    //     WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 2);
+    // PlayerInputComponent->BindAction<FSwitchWeaponInputParams>(TEXT("SwitchWeapon04"),
+    // IE_Pressed,
+    //     WeaponComponent, &UWeaponComponent::SwitchWeaponToIndex, 3);
 
     // TODO: delete
     // ----------
@@ -137,12 +182,12 @@ void APlayerGround::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
     // ----------
     // ZOOM:
 
-    DECLARE_DELEGATE_OneParam(
-        FZoomInputParams, bool);  // to pass an attribute to a function by reference below
-    PlayerInputComponent->BindAction<FZoomInputParams>(
-        TEXT("ToggleZoom"), IE_Pressed, WeaponComponent, &UWeaponComponent::ToggleZoom, true);
-    PlayerInputComponent->BindAction<FZoomInputParams>(
-        TEXT("ToggleZoom"), IE_Released, WeaponComponent, &UWeaponComponent::ToggleZoom, false);
+    // DECLARE_DELEGATE_OneParam(
+    //     FZoomInputParams, bool);  // to pass an attribute to a function by reference below
+    // PlayerInputComponent->BindAction<FZoomInputParams>(
+    //     TEXT("ToggleZoom"), IE_Pressed, WeaponComponent, &UWeaponComponent::ToggleZoom, true);
+    // PlayerInputComponent->BindAction<FZoomInputParams>(
+    //     TEXT("ToggleZoom"), IE_Released, WeaponComponent, &UWeaponComponent::ToggleZoom, false);
 }
 
 // TODO: delete
