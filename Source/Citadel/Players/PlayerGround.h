@@ -46,12 +46,6 @@ public:
     // ----------
     // PAWN INPUT FUNCTIONS
 
-    // TODO: delete
-    // void MoveForward(float AxisValue);
-    // void MoveRight(float AxisValue);
-    // void LookUp(float AxisValue);
-    // void LookRight(float AxisValue);
-
     void Move(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
 
