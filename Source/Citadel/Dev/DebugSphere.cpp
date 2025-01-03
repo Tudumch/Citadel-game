@@ -12,7 +12,7 @@ ADebugSphere::ADebugSphere()
     // improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
     SceneComponent =
-        CreateAbstractDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
+        CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
     RootComponent = SceneComponent;
 }
 

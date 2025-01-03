@@ -18,7 +18,7 @@ DEFINE_LOG_CATEGORY_STATIC(Log_WeaponRifle, All, All);
 AWeaponRifle::AWeaponRifle()
 {
     ImpactFXComponent =
-        CreateAbstractDefaultSubobject<UImpactFXComponent>(TEXT("ImpactFXComponent"));
+        CreateDefaultSubobject<UImpactFXComponent>(TEXT("ImpactFXComponent"));
 }
 
 bool AWeaponRifle::Shoot()

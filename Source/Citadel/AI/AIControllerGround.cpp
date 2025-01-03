@@ -16,7 +16,7 @@ AAIControllerGround::AAIControllerGround()
         TEXT("PerceptionComponentGround"));
     SetPerceptionComponent(*PerceptionComponentGround);
 
-    RespawnComponent = CreateAbstractDefaultSubobject<URespawnComponent>(
+    RespawnComponent = CreateDefaultSubobject<URespawnComponent>(
                 TEXT("RespawnComponent"));
 
     bWantsPlayerState = true; // required for AI respawn system

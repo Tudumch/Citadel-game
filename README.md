@@ -7,4 +7,4 @@ It has a lot of unfinished/testing features, so play at your own risk.
 # Installation
 You can download playable build [here](https://disk.yandex.ru/d/biHK881hoa0Hog).
 
-If you want to compile the project from the source code - you need to install Unreal Engine 5.1.
+If you want to compile the project from the source code - you need to install Unreal Engine 5.3.

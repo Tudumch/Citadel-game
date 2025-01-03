@@ -24,7 +24,7 @@ AWeaponProjectile::AWeaponProjectile()
     MeshComponent->SetupAttachment(CollisionComponent);
 
     ImpactFXComponent =
-        CreateAbstractDefaultSubobject<UImpactFXComponent>(TEXT("ImpactFXComponent"));
+        CreateDefaultSubobject<UImpactFXComponent>(TEXT("ImpactFXComponent"));
 
     ProjectileMovementComponent =
         CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");

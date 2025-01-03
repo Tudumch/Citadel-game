@@ -10,7 +10,7 @@
 
 APlayerControllerGround::APlayerControllerGround()
 {
-    RespawnComponent = CreateAbstractDefaultSubobject<URespawnComponent>(
+    RespawnComponent = CreateDefaultSubobject<URespawnComponent>(
                 TEXT("RespawnComponent"));
 }
 
