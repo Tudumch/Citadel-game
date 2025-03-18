@@ -1,10 +1,11 @@
 # Citadel
-Citadel - my pet-project for practice C++ and learn Unreal Engine. The game itself is an arcade third-person shooter similar to Unreal Tournament.
-It has a lot of unfinished/testing features, so play at your own risk.
+Citadel is my pet project designed to practice C++ and explore Unreal Engine. The game is an arcade-style third-person shooter inspired by Unreal Tournament.
+It includes many unfinished and experimental features.
 
-[![Watch demo video](https://img.youtube.com/vi/_jtbji4XGUc/maxresdefault.jpg)](https://youtu.be/nmktIocTjtU)
+[Demo video](https://www.youtube.com/watch?v=nmktIocTjtU)
+![Demo GIF](DemoGif.gif)
 
 # Installation
-You can download playable build [here](https://disk.yandex.ru/d/biHK881hoa0Hog).
+You can download the playable build [here](https://disk.yandex.ru/d/biHK881hoa0Hog).
 
-If you want to compile the project from the source code - you need to install Unreal Engine 5.3.
+To open the project in the Editor, you’ll need to install Unreal Engine 5.5.

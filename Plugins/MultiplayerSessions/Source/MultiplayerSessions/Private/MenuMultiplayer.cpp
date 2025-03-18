@@ -44,7 +44,7 @@ void UMenuMultiplayer::MenuSetup(
     // Widget and player input setup:
     AddToViewport();
     SetVisibility(ESlateVisibility::Visible);
-    bIsFocusable = true;
+    SetIsFocusable(true);
 
     if (GetWorld())
     {

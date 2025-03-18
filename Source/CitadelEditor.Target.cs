@@ -8,8 +8,9 @@ public class CitadelEditorTarget : TargetRules
 	public CitadelEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
-
-		ExtraModuleNames.AddRange( new string[] { "Citadel" } );
+        DefaultBuildSettings = BuildSettingsVersion.V5; 
+        IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_5; 
+        ExtraModuleNames.Add("Citadel");
+        bOverrideBuildEnvironment = true;
 	}
 }

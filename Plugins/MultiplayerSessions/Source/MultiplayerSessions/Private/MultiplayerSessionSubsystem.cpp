@@ -4,6 +4,7 @@
 
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
+#include "Online/OnlineSessionNames.h"
 
 DEFINE_LOG_CATEGORY_STATIC(Log_MultiplayerSessionSubsystem, All, All);
 
